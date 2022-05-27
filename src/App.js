@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import { Routes, Route, Link } from "react-router-dom";
+import { authRoutes, unAuthRoutes } from "./components/routes";
 
 function App() {
+  const [user, setUser] = useState({ id: 2 });
+  const isUser = Object.keys(user).length;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Routes>
+        {isUser < 1
+          ? unAuthRoutes.map(({ pathname, component, exact, id }) => {
+              return (
+                <Route
+                  key={id}
+                  path={pathname}
+                  element={component}
+                  exact={exact}
+                />
+              );
+            })
+          : authRoutes.map(({ pathname, component, exact, id }) => {
+              return (
+                <Route
+                  key={id}
+                  path={pathname}
+                  element={component}
+                  exact={exact}
+                />
+              );
+            })}
+      </Routes>
     </div>
   );
 }
