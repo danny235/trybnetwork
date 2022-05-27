@@ -7,6 +7,7 @@ import { Container } from "../styles/styledUtils";
 
 
 
+
 const HomeScreen = () => {
     const [latestPrice, setLatestPrice] = useState(0);
     useEffect(() => {
@@ -88,7 +89,7 @@ const HomeScreen = () => {
         };
         let config = { responsive: true };
         let series = [trace_price, trace_volumes];
-        Plotly.newPlot("chart", series, layout, config);
+        window.Plotly.newPlot("chart", series, layout, config);
     };
     
     
@@ -102,8 +103,8 @@ const HomeScreen = () => {
             y: [data.volumes],
         };
     
-        Plotly.update("chart", trace_price, {}, 0);
-        Plotly.update("chart", trace_volumes, {}, 1);
+        window.Plotly.update("chart", trace_price, {}, 0);
+        window.Plotly.update("chart", trace_volumes, {}, 1);
     };
     return (
     <div>
