@@ -1,5 +1,14 @@
 import styled from "styled-components";
 import { colors } from "../components/colors";
+import {Link} from "react-router-dom"
+import { keyframes } from 'styled-components'
+
+
+const slideAnimation = keyframes`
+ 0% { transform: translateX(50%) }
+ 50% { transform: translateX(70%) }
+ 100% { transform: translateX(100%) }
+`
 
 const SecondaryBtn = styled.button`
   outline: none;
@@ -41,4 +50,71 @@ const StyledInput = styled.input`
   font-weight: 400;
 `;
 
-export { SecondaryBtn, WhiteBtn, Container, StyledInput };
+const AmountInput = styled.input`
+  outline: none;
+  border: none;
+  border: 1px solid ${colors.black};
+  border-radius: 5px;
+  padding: 15px;
+  font-weight: 500;
+  width: 100%;
+  height: 50px;
+  color: ${colors.black};
+`;
+
+const CustomColoredBtn = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 50px;
+  color: ${colors.white};
+  background-color: ${props=>props.bgColor};
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 10px;
+  outline: none;
+  border: none;
+`;
+
+const CustomModal = styled.div`
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  height: ${props =>props.height}px;
+  width: ${props =>props.width}%;
+  align-items: center;
+  justify-content: center;
+  background-color: ${colors.white}
+`;
+
+const MenuContainer = styled.div`
+  position: absolute;
+  padding: 10px;
+  top: 0;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  background-color: ${colors.white};
+`;
+
+const MenuItem = styled(Link)`
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-decoration: none;
+  color: ${colors.black};
+  &:active {
+    color: ${colors.black};
+  }
+  &:focus {
+    color: ${colors.black};
+  }
+  &:visited {
+    color: ${colors.black};
+  }
+`;
+
+export { SecondaryBtn, WhiteBtn, Container, StyledInput, CustomColoredBtn, AmountInput, CustomModal, MenuContainer, MenuItem };
