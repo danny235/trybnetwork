@@ -31,6 +31,30 @@ function App() {
                 />
               );
             })}
+           {/* {
+             unAuthRoutes.map(({ pathname, component, exact, id }) => {
+              return (
+                <Route
+                  key={id}
+                  path={pathname}
+                  element={component}
+                  exact={exact}
+                />
+              );
+            })
+           } */}
+           {/* {
+             authRoutes.map(({ pathname, component, exact, id }) => {
+              return (
+                <Route
+                  key={id}
+                  path={pathname}
+                  element={component}
+                  exact={exact}
+                />
+              );
+            })
+           } */}
       </Routes>
     </div>
   );

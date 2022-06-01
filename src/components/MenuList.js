@@ -46,7 +46,7 @@ const MenuList = ({onClick}) => {
                         <p style={{fontWeight: "bold", fontSize: 17, flex: 1}}>{name}</p>
                         
                         <Icon
-                        style={{ verticalAlign: 'middle', marginTop: -15}} icon="akar-icons:arrow-right" />
+                        style={{ marginTop: -15}} icon="akar-icons:arrow-right" />
                   </MenuItem>
               )
           })}

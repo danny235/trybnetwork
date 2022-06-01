@@ -93,7 +93,7 @@ const MenuContainer = styled.div`
   padding: 10px;
   top: 0;
   z-index: 1;
-  height: 100%;
+  height: 100vh;
   width: 100%;
   background-color: ${colors.white};
 `;
@@ -116,5 +116,13 @@ const MenuItem = styled(Link)`
     color: ${colors.black};
   }
 `;
+
+const UploadField = styled.input`
+  height: 120px;
+  width: 100%;
+  border-radius: 20px;
+  outline: none;
+  border: 2px solid 
+`
 
 export { SecondaryBtn, WhiteBtn, Container, StyledInput, CustomColoredBtn, AmountInput, CustomModal, MenuContainer, MenuItem };
