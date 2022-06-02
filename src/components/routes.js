@@ -2,8 +2,12 @@ import AuthRoot from "../auth/AuthRoot";
 import Login from "../auth/Login";
 import SignUp from "../auth/SignUp";
 import BetHistory from "../main/BetHistory";
+import Dashboard from "../main/Dashboard";
 import Deposit from "../main/Deposit";
+import DepositHistory from "../main/DepositHistory";
+import WithdrawalHistory from "../main/WithdrawalHistory";
 import HomeScreen from "../main/HomeScreen";
+import Withdrawal from "../main/Withdrawal";
 
 const unAuthRoutes = [
   {
@@ -51,6 +55,35 @@ const authRoutes = [
     id: "deposit",
     component: <Deposit />
 },
+  {
+    pathname: "/deposit-history",
+    exact: true,
+    name: "depositHistory",
+    id: "depositHistory",
+    component: <DepositHistory />
+},
+  {
+    pathname: "/dashboard",
+    exact: true,
+    name: "dashboard",
+    id: "dashboard",
+    component: <Dashboard />
+},
+  {
+    pathname: "/withdrawal-history",
+    exact: true,
+    name: "dashboard",
+    id: "dashboard",
+    component: <WithdrawalHistory />
+},
+  {
+    pathname: "/withdraw",
+    exact: true,
+    name: "dashboard",
+    id: "dashboard",
+    component: <Withdrawal />
+},
+
 ];
 
 export { unAuthRoutes, authRoutes };

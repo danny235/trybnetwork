@@ -9,12 +9,12 @@ const MenuList = ({onClick}) => {
         {
             id: 1, 
             name: "Home",
-            path: "#"
+            path: "/"
         },
         {
             id: 2, 
             name: "Dashboard",
-            path: "#"
+            path: "/dashboard"
         },
         {
             id: 3, 
@@ -24,7 +24,7 @@ const MenuList = ({onClick}) => {
         {
             id: 4, 
             name: "Withdraw",
-            path: "#"
+            path: "/withdraw"
         },
         {
             id: 5, 

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { colors } from "../components/colors";
 import {Link} from "react-router-dom"
 import { keyframes } from 'styled-components'
+import { profileBackground } from "../assets";
 
 
 const slideAnimation = keyframes`
@@ -122,7 +123,36 @@ const UploadField = styled.input`
   width: 100%;
   border-radius: 20px;
   outline: none;
-  border: 2px solid 
+  border: 2px solid #ccc;
+  padding: 10px;
+`;
+
+const StyledProfileBackground = styled.div`
+  width: 100%;
+  height: 300px;
+  background-image: url(${profileBackground});
+  background-position: bottom;
+  background-size: cover;
+  background-repeat: no-repeat;
+`;
+
+const WhiteSection = styled.div`
+  background-color: #fff;
+  border-radius: 20px;
+  width: 100%;
+  height: 150px;
+  padding: 10px;
+  box-shadow: 2px 2px 20px 2px #ccc;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+`;
+
+const GreenSection = styled.div`
+  background-color: ${colors.secondary};
+  border-radius: 20px;
+  height: 300px;
+  width: 100%;
 `
 
-export { SecondaryBtn, WhiteBtn, Container, StyledInput, CustomColoredBtn, AmountInput, CustomModal, MenuContainer, MenuItem };
+export { SecondaryBtn, WhiteBtn, Container, StyledInput, CustomColoredBtn, AmountInput, CustomModal, MenuContainer, MenuItem, UploadField, StyledProfileBackground, WhiteSection, GreenSection };
