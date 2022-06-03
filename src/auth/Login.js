@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, SecondaryBtn } from "../styles/styledUtils";
 import * as yup from "yup";
-import { Formik, replace } from "formik";
+import { Formik } from "formik";
 import Input from "../components/Input";
 import { Icon } from "@iconify/react";
 import { useNavigate, Link } from "react-router-dom";

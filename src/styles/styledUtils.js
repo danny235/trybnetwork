@@ -51,6 +51,20 @@ const StyledInput = styled.input`
   font-weight: 400;
 `;
 
+const WhiteInput = styled(StyledInput)`
+  border: none;
+  border-bottom: 1px solid #fff;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 10px;
+  color: #fff;
+  background: none;
+  border-radius: 0px;
+  &::placeholder {
+    color: #ccc
+  }
+`
+
 const AmountInput = styled.input`
   outline: none;
   border: none;
@@ -151,8 +165,9 @@ const WhiteSection = styled.div`
 const GreenSection = styled.div`
   background-color: ${colors.secondary};
   border-radius: 20px;
-  height: 300px;
+  height: 400px;
   width: 100%;
+  padding: 10px;
 `
 
-export { SecondaryBtn, WhiteBtn, Container, StyledInput, CustomColoredBtn, AmountInput, CustomModal, MenuContainer, MenuItem, UploadField, StyledProfileBackground, WhiteSection, GreenSection };
+export { SecondaryBtn, WhiteBtn, Container, StyledInput, CustomColoredBtn, AmountInput, CustomModal, MenuContainer, MenuItem, UploadField, StyledProfileBackground, WhiteSection, GreenSection, WhiteInput };

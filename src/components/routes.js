@@ -8,6 +8,8 @@ import DepositHistory from "../main/DepositHistory";
 import WithdrawalHistory from "../main/WithdrawalHistory";
 import HomeScreen from "../main/HomeScreen";
 import Withdrawal from "../main/Withdrawal";
+import Profile from "../main/Profile";
+import Invitation from "../main/Invitation";
 
 const unAuthRoutes = [
   {
@@ -82,6 +84,20 @@ const authRoutes = [
     name: "dashboard",
     id: "dashboard",
     component: <Withdrawal />
+},
+  {
+    pathname: "/profile-settings",
+    exact: true,
+    name: "profile",
+    id: "profile",
+    component: <Profile />
+},
+  {
+    pathname: "/invitation",
+    exact: true,
+    name: "invitation",
+    id: "invitation",
+    component: <Invitation />
 },
 
 ];

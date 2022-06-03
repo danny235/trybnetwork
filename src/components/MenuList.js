@@ -26,11 +26,7 @@ const MenuList = ({onClick}) => {
             name: "Withdraw",
             path: "/withdraw"
         },
-        {
-            id: 5, 
-            name: "Logout",
-            path: "#"
-        },
+        
     ]
   return (
     <MenuContainer>

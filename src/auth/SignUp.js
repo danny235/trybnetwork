@@ -123,6 +123,7 @@ const SignUp = () => {
                   placeholder="123456"
                   keyboardType="numeric"
                   value={formikProps.values.referral_code}
+                  maxLength={6}
                 />
                 <p style={{
                   position: "absolute",

@@ -17,10 +17,10 @@ const validationSchema = yup.object().shape({
 const Deposit = () => {
   const [walletId, setWalletId] = useState(
     "TWaNLzBT3t6LWTmDRhUUG3JGheimpngj7y"
-  );
+    );
+    const [copied, setCopied] = useState(false);
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState([]);
-  const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
   
 
