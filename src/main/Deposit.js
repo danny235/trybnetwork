@@ -181,7 +181,7 @@ const Deposit = () => {
                   console.log(images, imageURLs);
                 }}
               >
-                Done
+               <p>Done</p>
               </SecondaryBtn>
             </div>
           )}

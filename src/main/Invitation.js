@@ -63,10 +63,10 @@ const Invitation = () => {
         }}
       >
         <SecondaryBtn>
-          <p style={{ fontSize: 12, paddingTop: 13, paddingRight: 4 }}>
+          <p style={{ fontSize: 12,paddingRight: 4 }}>
             Click to copy your invitation link
           </p>
-          <Icon icon="ci:share" style={{ color: "#fff" }} />
+          <Icon icon="ci:share" style={{ color: "#fff", marginTop: -15 }} />
         </SecondaryBtn>
       </CopyToClipboard>
     </Container>

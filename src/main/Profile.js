@@ -79,7 +79,9 @@ const Profile = () => {
           </button>
         </div>
       </GreenSection>
-      <SecondaryBtn style={{ color: "#fff" }}>Logout</SecondaryBtn>
+      <SecondaryBtn style={{ color: "#fff" }}>
+        <p>Logout</p>
+      </SecondaryBtn>
     </Container>
   );
 };

@@ -5,6 +5,10 @@ import { Formik } from "formik";
 import Input from "../components/Input";
 import { Icon } from "@iconify/react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { baseUrl, paths } from "../config/index";
+import { toast } from "react-toastify";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required().label("Email").email(),
@@ -18,6 +22,25 @@ const validationSchema = yup.object().shape({
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useDispatch();
+  const [isFetching, setIsFetching] = useState(false);
+  const handleSubmit = async (person) => {
+    try {
+      setIsFetching(true);
+      const response = await axios.post(`${baseUrl}/${paths.login}`, person);
+      console.log(response.data);
+      // if (response.status === 200) {
+      //   dispatch(addAccessToken(response.data.access));
+      //   dispatch(addRefreshToken(response.data.refresh));
+      //   setRequestState({...requestState, isFetching: false})
+      // }
+      // setRequestState({...requestState, isFetching: false})
+    } catch (err) {
+      console.log(err.message);
+      toast.error(err.message);
+      setIsFetching(false);
+    }
+  };
 
   return (
     <Container>
@@ -39,7 +62,11 @@ const Login = () => {
       <Formik
         initialValues={{ email: "", password: "" }}
         onSubmit={(values, actions) => {
-          const person = values;
+          const person = {
+            email: values.email,
+            password: values.password,
+          };
+          handleSubmit(person);
         }}
         validationSchema={validationSchema}
       >
@@ -75,16 +102,25 @@ const Login = () => {
                 }}
                 onClick={() => setShowPassword(!showPassword)}
               />
-              <Link style={styles.linkStyle} to="#">Forgot password?</Link>
+              <Link style={styles.linkStyle} to="#">
+                Forgot password?
+              </Link>
             </div>
-            <SecondaryBtn>
-              <p>Login</p>
+            <SecondaryBtn
+              disabled={isFetching}
+              type="submit"
+              onClick={formikProps.handleSubmit}
+            >
+              {isFetching ? <p>Loading...</p> : <p>Login</p>}
             </SecondaryBtn>
           </div>
         )}
       </Formik>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <p>Don't have an account?</p> <Link style={styles.linkStyle} to="/signup">Register here</Link>
+        <p>Don't have an account?</p>{" "}
+        <Link style={styles.linkStyle} to="/signup">
+          Register here
+        </Link>
       </div>
     </Container>
   );
@@ -92,8 +128,8 @@ const Login = () => {
 
 const styles = {
   linkStyle: {
-    textDecoration: 'none'
-  }
-}
+    textDecoration: "none",
+  },
+};
 
 export default Login;

@@ -98,7 +98,7 @@ const Withdrawal = () => {
               </div>
             </GreenSection>
               <SecondaryBtn>
-                Proceed
+                <p>Proceed</p>
               </SecondaryBtn>
             </div>
           )}

@@ -1,10 +1,14 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Container, SecondaryBtn } from "../styles/styledUtils";
 import * as yup from "yup";
 import { Formik } from "formik";
 import Input from "../components/Input";
 import { Icon } from "@iconify/react";
-import {Link, useNavigate} from 'react-router-dom'
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { baseUrl, paths } from "../config/index";
+import { toast } from "react-toastify";
 
 const validationSchema = yup.object().shape({
   username: yup.string().required().label("Username"),
@@ -27,7 +31,26 @@ const validationSchema = yup.object().shape({
 const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isFetching, setIsFetching] = useState(false);
+  const handleSubmit = async (person) => {
+    try {
+      const response = await axios.post(`${baseUrl}/${paths.register}`, person);
+      console.log(response.data);
+      setIsFetching(true);
+      // if (response.status === 200) {
+      //   dispatch(addAccessToken(response.data.access));
+      //   dispatch(addRefreshToken(response.data.refresh));
+      //   setRequestState({...requestState, isFetching: false})
+      // }
+      // setRequestState({...requestState, isFetching: false})
+    } catch (err) {
+      console.log(err.message);
+      toast.error(err.message);
+      setIsFetching(false);
+    }
+  };
   return (
     <Container>
       <div
@@ -38,13 +61,31 @@ const SignUp = () => {
           marginBottom: 40,
         }}
       >
-        <Icon icon="akar-icons:arrow-back" style={{ width: 30, height: 30 }} onClick={()=>navigate(-1)} />
+        <Icon
+          icon="akar-icons:arrow-back"
+          style={{ width: 30, height: 30 }}
+          onClick={() => navigate(-1)}
+        />
         <h2 style={{ marginLeft: 10 }}>Register</h2>
       </div>
       <Formik
-        initialValues={{ username: "", email: "", password: "", confirm_password: "", referral_code: ""  }}
+        initialValues={{
+          username: "",
+          email: "",
+          password: "",
+          confirm_password: "",
+          referral_code: "",
+        }}
         onSubmit={(values, actions) => {
-          const person = values;
+          const person = {
+            email: values.email,
+            password: values.password,
+            re_password: values.confirm_password,
+            is_superuser: false,
+            username: values.username,
+            referral_code: values.referral_code,
+          };
+          handleSubmit(person);
         }}
         validationSchema={validationSchema}
       >
@@ -57,7 +98,6 @@ const SignUp = () => {
               value={formikProps.values.username}
             />
             <Input
-             
               formikProps={formikProps}
               formikKey="email"
               placeholder="Email"
@@ -76,8 +116,8 @@ const SignUp = () => {
               <Icon
                 icon={
                   showPassword
-                  ? "clarity:eye-show-line"
-                  : "clarity:eye-hide-line"
+                    ? "clarity:eye-show-line"
+                    : "clarity:eye-hide-line"
                 }
                 style={{
                   width: 30,
@@ -92,7 +132,6 @@ const SignUp = () => {
             <div style={{ position: "relative" }}>
               <Input
                 type={showConfirmPassword ? "text" : "password"}
-                
                 formikProps={formikProps}
                 formikKey="confirm_password"
                 placeholder="Confirm Password"
@@ -101,8 +140,8 @@ const SignUp = () => {
               <Icon
                 icon={
                   showConfirmPassword
-                  ? "clarity:eye-show-line"
-                  : "clarity:eye-hide-line"
+                    ? "clarity:eye-show-line"
+                    : "clarity:eye-hide-line"
                 }
                 style={{
                   width: 30,
@@ -114,35 +153,40 @@ const SignUp = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               />
             </div>
-            <div style={{ position: "relative", marginBottom: 100}}>
-
-                <Input
-                 
-                  formikProps={formikProps}
-                  formikKey="referral_code"
-                  placeholder="123456"
-                  keyboardType="numeric"
-                  value={formikProps.values.referral_code}
-                  maxLength={6}
-                />
-                <p style={{
+            <div style={{ position: "relative", marginBottom: 100 }}>
+              <Input
+                formikProps={formikProps}
+                formikKey="referral_code"
+                placeholder="123456"
+                keyboardType="numeric"
+                value={formikProps.values.referral_code}
+                maxLength={6}
+              />
+              <p
+                style={{
                   position: "absolute",
                   top: 26,
                   right: 10,
-                  fontWeight: 'bold'
-                }}>Referral code</p>
-                <p style={{textAlign: 'right', color: "#ccc"}}>Optional</p>
+                  fontWeight: "bold",
+                }}
+              >
+                Referral code
+              </p>
+              <p style={{ textAlign: "right", color: "#ccc" }}>Optional</p>
             </div>
-            <SecondaryBtn>
-              <p>Register</p>
+            <SecondaryBtn
+              disabled={isFetching}
+              type="submit"
+              onClick={formikProps.handleSubmit}
+            >
+              {isFetching ? <p>Loading...</p> : <p>Register</p>}
             </SecondaryBtn>
           </div>
         )}
       </Formik>
-      <div style={{ display: "flex", justifyContent: 'center'}}>
-        <p>Already have an account?</p>
-        {" "}
-        <Link style={{textDecoration: 'none'}} to="/login">
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <p>Already have an account?</p>{" "}
+        <Link style={{ textDecoration: "none" }} to="/login">
           Login
         </Link>
       </div>
