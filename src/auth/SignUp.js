@@ -36,9 +36,9 @@ const SignUp = () => {
   const [isFetching, setIsFetching] = useState(false);
   const handleSubmit = async (person) => {
     try {
+      setIsFetching(true);
       const response = await axios.post(`${baseUrl}/${paths.register}`, person);
       console.log(response.data);
-      setIsFetching(true);
       // if (response.status === 200) {
       //   dispatch(addAccessToken(response.data.access));
       //   dispatch(addRefreshToken(response.data.refresh));
@@ -158,7 +158,7 @@ const SignUp = () => {
                 formikProps={formikProps}
                 formikKey="referral_code"
                 placeholder="123456"
-                keyboardType="numeric"
+                type="numeric"
                 value={formikProps.values.referral_code}
                 maxLength={6}
               />
@@ -172,7 +172,7 @@ const SignUp = () => {
               >
                 Referral code
               </p>
-              <p style={{ textAlign: "right", color: "#ccc" }}>Optional</p>
+              
             </div>
             <SecondaryBtn
               disabled={isFetching}

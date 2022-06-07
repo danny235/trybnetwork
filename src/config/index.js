@@ -1,4 +1,4 @@
-const baseUrl = "https://trybeapp.herokuapp.com"
+const baseUrl = "http://trybeapp.herokuapp.com"
 
 const paths = {
     login: "auth/login",

@@ -11,7 +11,8 @@ import { baseUrl, paths } from "../config/index";
 import { toast } from "react-toastify";
 
 const validationSchema = yup.object().shape({
-  email: yup.string().required().label("Email").email(),
+  username: yup.string().required().label("Username"),
+  // email: yup.string().required().label("Email").email(),
   password: yup
     .string()
     .required()
@@ -60,10 +61,11 @@ const Login = () => {
         <h2 style={{ marginLeft: 10 }}>Login</h2>
       </div>
       <Formik
-        initialValues={{ email: "", password: "" }}
+        initialValues={{  username:"",password: "" }}
         onSubmit={(values, actions) => {
           const person = {
-            email: values.email,
+       
+            username: values.username,
             password: values.password,
           };
           handleSubmit(person);
@@ -72,12 +74,18 @@ const Login = () => {
       >
         {(formikProps) => (
           <div>
-            <Input
+            {/* <Input
               formikProps={formikProps}
               formikKey="email"
               placeholder="Email"
-              keyboardType="email-address"
+              type="email"
               value={formikProps.values.email}
+            /> */}
+            <Input
+              formikProps={formikProps}
+              formikKey="username"
+              placeholder="Username"
+              value={formikProps.values.username}
             />
             <div style={{ position: "relative", marginBottom: 100 }}>
               <Input
