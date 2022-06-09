@@ -4,11 +4,12 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import Input from "../components/Input";
 import { Icon } from "@iconify/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { baseUrl, paths } from "../config/index";
 import { toast } from "react-toastify";
+import {updateToken, updateRefreshToken} from "../features/user/userSlice"
 
 const validationSchema = yup.object().shape({
   username: yup.string().required().label("Username"),
@@ -34,17 +35,21 @@ const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isFetching, setIsFetching] = useState(false);
+  const {code} = useParams()
+  console.log(code)
   const handleSubmit = async (person) => {
     try {
       setIsFetching(true);
       const response = await axios.post(`${baseUrl}/${paths.register}`, person);
       console.log(response.data);
-      // if (response.status === 200) {
-      //   dispatch(addAccessToken(response.data.access));
-      //   dispatch(addRefreshToken(response.data.refresh));
-      //   setRequestState({...requestState, isFetching: false})
-      // }
-      // setRequestState({...requestState, isFetching: false})
+      if (response.status === 200) {
+        dispatch(updateToken(response.data.access));
+        dispatch(updateRefreshToken(response.data.refresh));
+        toast.success("Registration Successful");
+        setIsFetching(false)
+        navigate("/", { replace: true });
+      }
+      
     } catch (err) {
       console.log(err.message);
       toast.error(err.message);
@@ -74,7 +79,7 @@ const SignUp = () => {
           email: "",
           password: "",
           confirm_password: "",
-          referral_code: "",
+          referral_code: code ? code.substring(1, code.length) : "",
         }}
         onSubmit={(values, actions) => {
           const person = {

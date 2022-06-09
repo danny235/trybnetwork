@@ -8,6 +8,7 @@ const Invitation = () => {
   const navigate = useNavigate();
   const [refCode, setRefCode] = useState("123456");
   const [copied, setCopied] = useState(false);
+  console.log(document.location.origin)
   return (
     <Container>
       <div
@@ -56,7 +57,7 @@ const Invitation = () => {
       </div>
       <hr />
       <CopyToClipboard
-        text={refCode}
+        text={`${document.location.origin}/signup/:123456`}
         onCopy={() => {
           setCopied(true);
           setTimeout(() => setCopied(false), 3000);

@@ -9,7 +9,7 @@ import {
   CustomColoredBtn,
   CustomModal,
 } from "../styles/styledUtils";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import Backdrop from "@mui/material/Backdrop";
 import MenuList from "../components/MenuList";
@@ -17,7 +17,8 @@ import MenuList from "../components/MenuList";
 const HomeScreen = () => {
   const [latestPrice, setLatestPrice] = useState(0);
   const [open, setOpen] = useState(false);
-  const [showMenu, setShowMenu] = useState(false)
+  const navigate = useNavigate()
+
   useEffect(() => {
     fetchData().then((chartData) => {
       initChart(chartData);
@@ -123,21 +124,24 @@ const HomeScreen = () => {
   };
   return (
     <div>
-      <div style={styles.headerStyle}>
-        <Brand style={{ flex: 1 }} />
-        <button onClick={()=>setShowMenu(true)} style={styles.hamburgerStyle}>
-          <svg
-            width="36"
-            height="25"
-            viewBox="0 0 36 25"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="36" height="5" fill="black" />
-            <rect y="10" width="36" height="5" fill="black" />
-            <rect y="20" width="36" height="5" fill="black" />
-          </svg>
-        </button>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginTop: 10,
+          marginBottom: 10,
+          fontWeight: 500,
+          fontSize: 22,
+          paddingLeft: 12
+        }}
+      >
+        <Icon
+          icon="akar-icons:arrow-back"
+          style={{ width: 30, height: 30, marginTop: -8, marginRight: 10 }}
+          onClick={() => navigate(-1)}
+        />
+        {" "}
+        Trade
       </div>
       <Container>
         <div
@@ -147,6 +151,7 @@ const HomeScreen = () => {
             fontSize: 17,
             fontWeight: 400,
             marginBottom: 10,
+           
           }}
         >
           <Icon
@@ -205,7 +210,9 @@ const HomeScreen = () => {
         </div>
         <Backdrop open={open}>
           <CustomModal height={300} width={85}>
-            <h3 style={{textAlign: 'center', marginBottom: 10}}>Do you want to continue?</h3>
+            <h3 style={{ textAlign: "center", marginBottom: 10 }}>
+              Do you want to continue?
+            </h3>
             <div
               style={{
                 display: "flex",
@@ -230,21 +237,11 @@ const HomeScreen = () => {
           </CustomModal>
         </Backdrop>
       </Container>
-      {showMenu && <MenuList onClick={()=>setShowMenu(false)} />}
     </div>
   );
 };
 
 const styles = {
-  headerStyle: {
-    display: "flex",
-    padding: 10,
-  },
-  hamburgerStyle: {
-    background: "none",
-    outline: "none",
-    border: "none",
-  },
   textStyle: {
     fontWeight: "bold",
   },

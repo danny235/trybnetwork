@@ -33,11 +33,25 @@ const unAuthRoutes = [
     id: "auth",
     component: <SignUp />,
   },
+  {
+    pathname: "/signup/:code",
+    exact: true,
+    name: "signup",
+    id: "auth",
+    component: <SignUp />,
+  },
 ];
 
 const authRoutes = [
   {
     pathname: "/",
+    exact: true,
+    name: "dashboard",
+    id: "dashboard",
+    component: <Dashboard />
+  },
+  {
+    pathname: "/trade",
     exact: true,
     name: "home",
     id: "home",
@@ -63,13 +77,6 @@ const authRoutes = [
     name: "depositHistory",
     id: "depositHistory",
     component: <DepositHistory />
-},
-  {
-    pathname: "/dashboard",
-    exact: true,
-    name: "dashboard",
-    id: "dashboard",
-    component: <Dashboard />
 },
   {
     pathname: "/withdrawal-history",

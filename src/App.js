@@ -4,15 +4,18 @@ import { Routes, Route, Link } from "react-router-dom";
 import { authRoutes, unAuthRoutes } from "./components/routes";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {useSelector} from "react-redux"
 
 function App() {
   const [user, setUser] = useState({});
   const isUser = Object.keys(user).length;
+  const {token} = useSelector(state=>state.user)
+  console.log(token)
 
   return (
     <div>
       <Routes>
-        {isUser < 1
+        {token === ""
           ? unAuthRoutes.map(({ pathname, component, exact, id }) => {
               return (
                 <Route

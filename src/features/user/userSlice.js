@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import storage from "redux-persist/lib/storage";
 const initialState = {
     userProfile: {},
     token: "",
     userFetching: false,
+    refreshToken: ""
 }
 
 export const userSlice = createSlice({
@@ -19,10 +20,20 @@ export const userSlice = createSlice({
           updateUserFetching: (state, action) => {
             state.userFetching = action.payload;
           },
+          updateRefreshToken: (state, action) => {
+            state.refreshToken = action.payload;
+          },
+          logOutUser: (state) => {
+            state.refreshToken = ""
+            state.token = ""
+            state.userProfile = {}
+            storage.removeItem("persist:root")
+            return { ...state}
+          }
     }
 })
 
-export const {updateUser, addAccessToken, updateUserFetching} =
+export const {updateUser, updateToken, updateUserFetching, logOutUser, updateRefreshToken} =
   userSlice.actions;
 
 export default userSlice.reducer;

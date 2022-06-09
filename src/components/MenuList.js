@@ -13,8 +13,8 @@ const MenuList = ({onClick}) => {
         },
         {
             id: 2, 
-            name: "Dashboard",
-            path: "/dashboard"
+            name: "Trade",
+            path: "/trade"
         },
         {
             id: 3, 

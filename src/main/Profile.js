@@ -8,9 +8,18 @@ import {
 } from "../styles/styledUtils";
 import { useNavigate } from "react-router-dom";
 import { Icon } from "@iconify/react";
+import { useDispatch, useSelector } from "react-redux";
+import { logOutUser } from "../features/user/userSlice";
+import axios from "axios";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { userProfile, token } = useSelector((state) => state.user);
+  const handleLogOut = () => {
+    dispatch(logOutUser);
+    // navigate("/", { replace: true });
+  };
   return (
     <Container>
       <div
@@ -33,16 +42,27 @@ const Profile = () => {
         <div>
           <p style={{ color: "#fff" }}>Username</p>
           <StyledInput
-            style={{ borderColor: "#fff", background: "none", color: "#fff", marginTop: 1 }}
-            defaultValue="JoeCarter32"
+            style={{
+              borderColor: "#fff",
+              background: "none",
+              color: "#fff",
+              marginTop: 1,
+              textTransform: "capitalize",
+            }}
+            defaultValue={userProfile?.username}
             readOnly
           />
         </div>
         <div>
           <p style={{ color: "#fff" }}>Email</p>
           <StyledInput
-            style={{ borderColor: "#fff", background: "none", color: "#fff", marginTop: 1 }}
-            defaultValue="joecarter@gmail.com"
+            style={{
+              borderColor: "#fff",
+              background: "none",
+              color: "#fff",
+              marginTop: 1,
+            }}
+            defaultValue={userProfile?.email}
             readOnly
           />
         </div>
@@ -79,7 +99,7 @@ const Profile = () => {
           </button>
         </div>
       </GreenSection>
-      <SecondaryBtn style={{ color: "#fff" }}>
+      <SecondaryBtn onClick={()=>handleLogOut()} style={{ color: "#fff" }}>
         <p>Logout</p>
       </SecondaryBtn>
     </Container>

@@ -78,7 +78,7 @@ const Withdrawal = () => {
                 formikProps={formikProps}
                 formikKey="amount"
                 placeholder="Enter amount"
-                keyboardType="decimal"
+                type="number"
                 value={formikProps.values.amount}
               />
               <div style={{display: "flex"}}>

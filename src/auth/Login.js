@@ -6,13 +6,14 @@ import Input from "../components/Input";
 import { Icon } from "@iconify/react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { baseUrl, paths } from "../config/index";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import {updateToken, updateRefreshToken} from "../features/user/userSlice"
 
 const validationSchema = yup.object().shape({
-  username: yup.string().required().label("Username"),
-  // email: yup.string().required().label("Email").email(),
+ 
+  email: yup.string().required().label("Email").email(),
   password: yup
     .string()
     .required()
@@ -23,25 +24,29 @@ const validationSchema = yup.object().shape({
 const Login = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useDispatch();
   const [isFetching, setIsFetching] = useState(false);
+  const dispatch = useDispatch();
   const handleSubmit = async (person) => {
     try {
       setIsFetching(true);
       const response = await axios.post(`${baseUrl}/${paths.login}`, person);
-      console.log(response.data);
-      // if (response.status === 200) {
-      //   dispatch(addAccessToken(response.data.access));
-      //   dispatch(addRefreshToken(response.data.refresh));
-      //   setRequestState({...requestState, isFetching: false})
-      // }
-      // setRequestState({...requestState, isFetching: false})
+      console.log(response);
+      
+      if (response.status === 200) {
+        dispatch(updateToken(response.data.access));
+        dispatch(updateRefreshToken(response.data.refresh));
+        toast.success("Successful");
+        setIsFetching(false)
+        navigate("/", { replace: true });
+      }
     } catch (err) {
       console.log(err.message);
       toast.error(err.message);
       setIsFetching(false);
     }
   };
+
+
 
   return (
     <Container>
@@ -61,11 +66,10 @@ const Login = () => {
         <h2 style={{ marginLeft: 10 }}>Login</h2>
       </div>
       <Formik
-        initialValues={{  username:"",password: "" }}
+        initialValues={{ email: "",password: "" }}
         onSubmit={(values, actions) => {
           const person = {
-       
-            username: values.username,
+            email: values.email,
             password: values.password,
           };
           handleSubmit(person);
@@ -74,19 +78,14 @@ const Login = () => {
       >
         {(formikProps) => (
           <div>
-            {/* <Input
+            <Input
               formikProps={formikProps}
               formikKey="email"
               placeholder="Email"
               type="email"
               value={formikProps.values.email}
-            /> */}
-            <Input
-              formikProps={formikProps}
-              formikKey="username"
-              placeholder="Username"
-              value={formikProps.values.username}
             />
+            
             <div style={{ position: "relative", marginBottom: 100 }}>
               <Input
                 type={showPassword ? "text" : "password"}

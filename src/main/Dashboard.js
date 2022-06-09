@@ -1,14 +1,23 @@
 import { Icon } from "@iconify/react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { dp, profileBackground } from "../assets";
+import Brand from "../components/Brand";
+import MenuList from "../components/MenuList";
 import {
   Container,
   StyledProfileBackground,
   WhiteSection,
 } from "../styles/styledUtils";
+import { baseUrl, paths } from "../config/index";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUser, updateUserFetching } from "../features/user/userSlice";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
+  const [showMenu, setShowMenu] = useState(false);
+  const { userProfile, token } = useSelector((state) => state.user);
   const menuRoutes = [
     {
       id: 1,
@@ -40,35 +49,70 @@ const Dashboard = () => {
     },
   ];
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const fetchUser = async (person) => {
+    try {
+      dispatch(updateUserFetching(true));
+      const response = await axios.get(`${baseUrl}/${paths.currentUser}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log(response);
+
+      if (response.status === 200) {
+        dispatch(updateUser(response.data));
+        dispatch(updateUserFetching(false));
+      }
+    } catch (err) {
+      console.log(err.message);
+      dispatch(updateUserFetching(false));
+      toast.error(err.message);
+    }
+  };
+  useEffect(() => {
+    fetchUser();
+  }, [token]);
+  
   return (
     <div>
+      <div style={styles.headerStyle}>
+        <Brand style={{ flex: 1 }} />
+        <button onClick={() => setShowMenu(true)} style={styles.hamburgerStyle}>
+          <svg
+            width="36"
+            height="25"
+            viewBox="0 0 36 25"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="36" height="5" fill="black" />
+            <rect y="10" width="36" height="5" fill="black" />
+            <rect y="20" width="36" height="5" fill="black" />
+          </svg>
+        </button>
+      </div>
       <StyledProfileBackground>
         <Container>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginTop: 10,
-              marginBottom: 40,
-            }}
-          >
-            <Icon
-              icon="akar-icons:arrow-back"
-              style={{ width: 30, height: 30, marginTop: -15 }}
-              onClick={() => navigate(-1)}
-            />
-          </div>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <img src={dp} alt="profile photo" />
-            <div style={{paddingTop: 20, paddingLeft: 20}}>
-              <h3 style={{color: "#fff",}}>Joe Carter</h3>
-              <p style={{color: "#fff",}}>Invitation code: 123456</p>
+            <img
+              style={{ width: 52, height: 50, borderRadius: 50 }}
+              src={
+                userProfile?.profile?.image_url === ""
+                  ? dp
+                  : `${userProfile?.profile?.image_url}`
+              }
+              alt="profile"
+            />
+            <div style={{ paddingTop: 20, paddingLeft: 20 }}>
+              <h3 style={{ color: "#fff", textTransform: "capitalize" }}>
+                {userProfile?.username === "" ? "----" : userProfile?.username}
+              </h3>
+              <p style={{ color: "#fff" }}>Invitation code: 123456</p>
             </div>
           </div>
           <WhiteSection>
             <div>
-              <p style={{fontWeight: "bold"}}>My balance</p>
-              <p style={{fontWeight: "bold"}}>$100</p>
+              <p style={{ fontWeight: "bold" }}>My balance</p>
+              <p style={{ fontWeight: "bold" }}>$100</p>
             </div>
             <hr />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -84,7 +128,7 @@ const Dashboard = () => {
                   alignItems: "center",
                   borderRadius: 10,
                   fontWeight: "bold",
-                  fontSize: 15
+                  fontSize: 15,
                 }}
                 to="/withdraw"
               >
@@ -102,7 +146,7 @@ const Dashboard = () => {
                   alignItems: "center",
                   borderRadius: 10,
                   fontWeight: "bold",
-                  fontSize: 15
+                  fontSize: 15,
                 }}
                 to="/deposit"
               >
@@ -148,11 +192,21 @@ const Dashboard = () => {
           </Link>
         ))}
       </div>
+      {showMenu && <MenuList onClick={() => setShowMenu(false)} />}
     </div>
   );
 };
 
 const styles = {
+  headerStyle: {
+    display: "flex",
+    padding: 10,
+  },
+  hamburgerStyle: {
+    background: "none",
+    outline: "none",
+    border: "none",
+  },
   menuListContainer: {
     padding: 15,
     borderRadius: 40,
