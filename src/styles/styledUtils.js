@@ -36,7 +36,7 @@ const WhiteBtn = styled(SecondaryBtn)`
 
 const Container = styled.div`
   padding: 20px;
-  width: 97%;
+  width: 100%;
 `;
 
 const StyledInput = styled.input`

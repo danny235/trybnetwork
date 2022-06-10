@@ -3,12 +3,14 @@ import { Icon } from "@iconify/react";
 import { Container, SecondaryBtn } from "../styles/styledUtils";
 import { useNavigate } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useDispatch, useSelector } from "react-redux";
 
 const Invitation = () => {
   const navigate = useNavigate();
   const [refCode, setRefCode] = useState("123456");
   const [copied, setCopied] = useState(false);
-  console.log(document.location.origin)
+  const { userProfile, token } = useSelector((state) => state.user);
+ 
   return (
     <Container>
       <div
@@ -37,10 +39,10 @@ const Invitation = () => {
       >
         <h3>Invitation code:</h3>
         <div style={{ display: "flex", alignItems: "center" }}>
-          <h2 style={{fontWeight: "bold"}}>123456</h2>
+          <h2 style={{fontWeight: "bold"}}>{userProfile?.profile?.user_referral_code}</h2>
           <div>
             <CopyToClipboard
-              text={refCode}
+              text={userProfile?.profile?.user_referral_code}
               onCopy={() => {
                 setCopied(true);
                 setTimeout(() => setCopied(false), 3000);
@@ -57,7 +59,7 @@ const Invitation = () => {
       </div>
       <hr />
       <CopyToClipboard
-        text={`${document.location.origin}/signup/:123456`}
+        text={`${document.location.origin}/signup/:${userProfile?.profile?.user_referral_code}`}
         onCopy={() => {
           setCopied(true);
           setTimeout(() => setCopied(false), 3000);

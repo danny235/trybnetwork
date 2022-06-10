@@ -56,14 +56,14 @@ const Dashboard = () => {
       const response = await axios.get(`${baseUrl}/${paths.currentUser}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log(response);
+      
 
       if (response.status === 200) {
         dispatch(updateUser(response.data));
         dispatch(updateUserFetching(false));
       }
     } catch (err) {
-      console.log(err.message);
+      
       dispatch(updateUserFetching(false));
       toast.error(err.message);
     }
@@ -71,7 +71,7 @@ const Dashboard = () => {
   useEffect(() => {
     fetchUser();
   }, [token]);
-  
+
   return (
     <div>
       <div style={styles.headerStyle}>
@@ -106,7 +106,9 @@ const Dashboard = () => {
               <h3 style={{ color: "#fff", textTransform: "capitalize" }}>
                 {userProfile?.username === "" ? "----" : userProfile?.username}
               </h3>
-              <p style={{ color: "#fff" }}>Invitation code: 123456</p>
+              <p style={{ color: "#fff" }}>
+                Invitation code: {userProfile?.profile?.user_referral_code}
+              </p>
             </div>
           </div>
           <WhiteSection>
