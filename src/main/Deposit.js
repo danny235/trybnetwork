@@ -15,7 +15,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Deposit = () => {
-  const [walletId, setWalletId] = useState(
+  const [walletId] = useState(
     "TWaNLzBT3t6LWTmDRhUUG3JGheimpngj7y"
     );
     const [copied, setCopied] = useState(false);

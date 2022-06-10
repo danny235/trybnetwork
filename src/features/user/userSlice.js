@@ -28,7 +28,7 @@ export const userSlice = createSlice({
             state.token = ""
             state.userProfile = {}
             storage.removeItem("persist:root")
-            return { ...state}
+            
           }
     }
 })

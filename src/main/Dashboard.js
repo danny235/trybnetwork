@@ -6,6 +6,7 @@ import Brand from "../components/Brand";
 import MenuList from "../components/MenuList";
 import {
   Container,
+  SecondaryBtn,
   StyledProfileBackground,
   WhiteSection,
 } from "../styles/styledUtils";
@@ -56,14 +57,12 @@ const Dashboard = () => {
       const response = await axios.get(`${baseUrl}/${paths.currentUser}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      
 
       if (response.status === 200) {
         dispatch(updateUser(response.data));
         dispatch(updateUserFetching(false));
       }
     } catch (err) {
-      
       dispatch(updateUserFetching(false));
       toast.error(err.message);
     }
@@ -158,6 +157,14 @@ const Dashboard = () => {
           </WhiteSection>
         </Container>
       </StyledProfileBackground>
+      <div style={{ padding: 10 }}>
+        <Link style={{ textDecoration: "none" }} to="/trade">
+          <SecondaryBtn>
+            <p style={{ color: "white" }}>Trade Now</p>
+          </SecondaryBtn>
+        </Link>
+      </div>
+
       <div style={styles.menuListContainer}>
         {menuRoutes.map(({ id, name, icon, color, route }) => (
           <Link

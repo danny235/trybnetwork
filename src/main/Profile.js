@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {
   Container,
   GreenSection,
@@ -17,9 +17,17 @@ const Profile = () => {
   const dispatch = useDispatch();
   const { userProfile, token } = useSelector((state) => state.user);
   const handleLogOut = () => {
-    dispatch(logOutUser);
-    // navigate("/", { replace: true });
+    navigate("/", { replace: true });
+    dispatch(logOutUser());
   };
+
+  useEffect(() => {
+    if (token === "") {
+      navigate("/", { replace: true });
+    }
+    return;
+  }, [token]);
+
   return (
     <Container>
       <div
@@ -99,7 +107,7 @@ const Profile = () => {
           </button>
         </div>
       </GreenSection>
-      <SecondaryBtn onClick={()=>handleLogOut()} style={{ color: "#fff" }}>
+      <SecondaryBtn onClick={() => handleLogOut()} style={{ color: "#fff" }}>
         <p>Logout</p>
       </SecondaryBtn>
     </Container>

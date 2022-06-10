@@ -4,6 +4,7 @@ import { Container, SecondaryBtn } from "../styles/styledUtils";
 import { useNavigate } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useDispatch, useSelector } from "react-redux";
+import Alert from "@mui/material/Alert";
 
 const Invitation = () => {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const Invitation = () => {
           alignItems: "center",
         }}
       >
+        {copied && <Alert severity="success">Copied to clipboard!</Alert>}
         <h3>Invitation code:</h3>
         <div style={{ display: "flex", alignItems: "center" }}>
           <h2 style={{fontWeight: "bold"}}>{userProfile?.profile?.user_referral_code}</h2>
