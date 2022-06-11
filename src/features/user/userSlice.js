@@ -4,7 +4,8 @@ const initialState = {
     userProfile: {},
     token: "",
     userFetching: false,
-    refreshToken: ""
+    refreshToken: "",
+    invites: []
 }
 
 export const userSlice = createSlice({
@@ -23,17 +24,21 @@ export const userSlice = createSlice({
           updateRefreshToken: (state, action) => {
             state.refreshToken = action.payload;
           },
+          updateInvites: (state, action)=>{
+            state.invites = action.payload
+          },
           logOutUser: (state) => {
             state.refreshToken = ""
             state.token = ""
             state.userProfile = {}
+            state.invites = []
             storage.removeItem("persist:root")
             
           }
     }
 })
 
-export const {updateUser, updateToken, updateUserFetching, logOutUser, updateRefreshToken} =
+export const {updateUser, updateToken, updateUserFetching, logOutUser, updateRefreshToken, updateInvites} =
   userSlice.actions;
 
 export default userSlice.reducer;

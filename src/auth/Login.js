@@ -9,10 +9,9 @@ import axios from "axios";
 import { baseUrl, paths } from "../config/index";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import {updateToken, updateRefreshToken} from "../features/user/userSlice"
+import { updateToken, updateRefreshToken } from "../features/user/userSlice";
 
 const validationSchema = yup.object().shape({
- 
   email: yup.string().required().label("Email").email(),
   password: yup
     .string()
@@ -31,22 +30,26 @@ const Login = () => {
       setIsFetching(true);
       const response = await axios.post(`${baseUrl}/${paths.login}`, person);
       console.log(response);
-      
+
       if (response.status === 200) {
         dispatch(updateToken(response.data.access));
         dispatch(updateRefreshToken(response.data.refresh));
         toast.success("Successful");
-        setIsFetching(false)
+        setIsFetching(false);
         navigate("/", { replace: true });
       }
+      console.log("hi");
     } catch (err) {
+      if (err.message === "Request failed with status code 401") {
+        toast.error("Invalid credentials");
+        setIsFetching(false);
+        return
+      } 
       console.log(err.message);
       toast.error(err.message);
       setIsFetching(false);
     }
   };
-
-
 
   return (
     <Container>
@@ -66,7 +69,7 @@ const Login = () => {
         <h2 style={{ marginLeft: 10 }}>Login</h2>
       </div>
       <Formik
-        initialValues={{ email: "",password: "" }}
+        initialValues={{ email: "", password: "" }}
         onSubmit={(values, actions) => {
           const person = {
             email: values.email,
@@ -85,7 +88,7 @@ const Login = () => {
               type="email"
               value={formikProps.values.email}
             />
-            
+
             <div style={{ position: "relative", marginBottom: 100 }}>
               <Input
                 type={showPassword ? "text" : "password"}

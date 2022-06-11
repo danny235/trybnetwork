@@ -15,6 +15,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser, updateUserFetching } from "../features/user/userSlice";
 import { toast } from "react-toastify";
+import { colors } from "../components/colors";
 
 const Dashboard = () => {
   const [showMenu, setShowMenu] = useState(false);
@@ -43,6 +44,13 @@ const Dashboard = () => {
     },
     {
       id: 4,
+      name: "Trade",
+      icon: "bx:coin-stack",
+      color: colors.lighterSecondary,
+      route: "/trade",
+    },
+    {
+      id: 5,
       name: "Invitation",
       icon: "fa-solid:user-friends",
       color: "#2a11c1",
@@ -51,7 +59,7 @@ const Dashboard = () => {
   ];
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const fetchUser = async (person) => {
+  const fetchUser = async () => {
     try {
       dispatch(updateUserFetching(true));
       const response = await axios.get(`${baseUrl}/${paths.currentUser}`, {
@@ -157,13 +165,7 @@ const Dashboard = () => {
           </WhiteSection>
         </Container>
       </StyledProfileBackground>
-      <div style={{ padding: 10 }}>
-        <Link style={{ textDecoration: "none" }} to="/trade">
-          <SecondaryBtn>
-            <p style={{ color: "white" }}>Trade Now</p>
-          </SecondaryBtn>
-        </Link>
-      </div>
+    
 
       <div style={styles.menuListContainer}>
         {menuRoutes.map(({ id, name, icon, color, route }) => (

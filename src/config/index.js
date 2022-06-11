@@ -4,7 +4,8 @@ const paths = {
     login: "auth/login/",
     register: "auth/register/",
     currentUser: "auth/users/me/",
-    logout: "auth/logout/"
+    logout: "auth/logout/",
+    invitedUsers: "auth/invites"
 }
 
 export {baseUrl, paths}
