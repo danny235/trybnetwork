@@ -92,7 +92,7 @@ const Invitation = () => {
       <hr />
       <div>
         <h2>Commission rules</h2>
-        <p style={{fontSize: 13}}>For every bet placed by a friend after registering, you will recive a corresponding percentage commission.</p>
+        <p style={{fontSize: 13}}>For every bet placed by a friend after registering, you will receive a corresponding percentage commission.</p>
       </div>
       <h3 style={{textAlign: "center"}}>Referral summary</h3>
       <TableContainer>

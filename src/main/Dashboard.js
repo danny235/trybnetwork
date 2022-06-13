@@ -121,7 +121,7 @@ const Dashboard = () => {
           <WhiteSection>
             <div>
               <p style={{ fontWeight: "bold" }}>My balance</p>
-              <p style={{ fontWeight: "bold" }}>$100</p>
+              <p style={{ fontWeight: "bold" }}>100 USDT</p>
             </div>
             <hr />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
