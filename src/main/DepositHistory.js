@@ -1,8 +1,12 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { Icon } from "@iconify/react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Container } from "../styles/styledUtils";
+import {useSelector} from "react-redux"
+import {updateDepositHistory} from "../features/user/userSlice"
+import {baseUrl, paths} from "../config/index"
+import axios from "axios"
 
 const DepositHistory = () => {
  const navigate = useNavigate();
@@ -57,6 +61,23 @@ const DepositHistory = () => {
       status: "Successful",
     },
   ];
+  const {userProfile, token} = useSelector(state=>state.user);
+
+  const fetchDeposits = async () => {
+  try{
+    const response = await axios.get(`${baseUrl}/${paths.history}/${userProfile?.profile?.slug}/${paths.deposit}`,{
+      headers: {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    })
+    console.log(response)
+  }catch(err){
+    console.log(err.message)
+  }
+  }
+  useEffect(()=>{
+    fetchDeposits()
+  },[])
   return (
     <div>
       <Container>

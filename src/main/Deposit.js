@@ -8,29 +8,57 @@ import Alert from "@mui/material/Alert";
 import * as yup from "yup";
 import { Formik, replace } from "formik";
 import Input from "../components/Input";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { baseUrl, paths } from "../config";
 
 const validationSchema = yup.object().shape({
   amount: yup.string().required().label("Amount"),
-  screenshot: yup.string().required().label("screenshot"),
 });
 
 const Deposit = () => {
-  const [walletId] = useState(
-    "TWaNLzBT3t6LWTmDRhUUG3JGheimpngj7y"
-    );
-    const [copied, setCopied] = useState(false);
-  const [images, setImages] = useState([]);
-  const [imageURLs, setImageURLs] = useState([]);
+  const [walletId] = useState("TWaNLzBT3t6LWTmDRhUUG3JGheimpngj7y");
+  const [copied, setCopied] = useState(false);
+  const [images, setImages] = useState(null);
+  const [imageURLs, setImageURLs] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  
+  const { userProfile, token } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (images.length < 1) return;
-    const newImageUrls = [];
-    images.forEach((image) => newImageUrls.push(URL.createObjectURL(image)));
+    if (images === null) return;
+    let newImageUrls;
+    newImageUrls = URL.createObjectURL(images);
     setImageURLs(newImageUrls);
     return () => {};
   }, []);
+
+  const Paid = async (amount, token) => {
+    try {
+      const fd = new FormData();
+      fd.append("screenshot_payment", images, images.name);
+      fd.append("wallet_address", walletId);
+      fd.append("amount_to_deposit", amount);
+      const data = {
+        wallet_address: walletId,
+        screenshot_payment: images,
+        amount_to_deposit: amount
+      }
+      console.log(data)
+      setLoading(true);
+      const response = await axios.post(
+        `${baseUrl}/${paths.wallet}/${userProfile.profile.slug}/${paths.deposit}`,
+        data,
+        {
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": 'multipart/form-data' },
+        }
+      );
+      console.log(response);
+    } catch (err) {
+      setLoading(false);
+      console.log(err.message);
+    }
+  };
 
   return (
     <div>
@@ -59,7 +87,10 @@ const Deposit = () => {
             />
             <h2 style={{ marginLeft: 10 }}>Deposit</h2>
           </div>
-          <Link style={{textDecoration: "none", color: "#000"}} to="/deposit-history">
+          <Link
+            style={{ textDecoration: "none", color: "#000" }}
+            to="/deposit-history"
+          >
             <Icon
               style={{ width: 25, height: 25, marginTop: -35 }}
               icon="ic:outline-history"
@@ -116,7 +147,7 @@ const Deposit = () => {
         <Formik
           initialValues={{ amount: "" }}
           onSubmit={(values, actions) => {
-            const person = values;
+            Paid(values.amount, token);
           }}
           validationSchema={validationSchema}
         >
@@ -124,16 +155,14 @@ const Deposit = () => {
             <div style={{ position: "relative" }}>
               <UploadField
                 onChange={(e) => {
-                  setImages([...e.target.files]);
-                  if (images.length < 1) return;
-                  const newImageUrls = [];
-                  images.forEach((image) =>
-                    newImageUrls.push(URL.createObjectURL(image))
-                  );
+                  setImages(e.target.files[0]);
+                  if (images === null) return;
+                  let newImageUrls;
+                  newImageUrls = URL.createObjectURL(images);
                   setImageURLs(newImageUrls);
+                  console.log(newImageUrls);
                 }}
                 type="file"
-                multiple
                 accept="image/*"
               />
               <svg
@@ -149,23 +178,19 @@ const Deposit = () => {
                   fill="#219653"
                 />
               </svg>
-              {imageURLs.map((imageSrc) => {
-                console.log(imageSrc);
-                return (
-                  <img
-                    key={imageSrc}
-                    src={imageSrc}
-                    style={{
-                      height: 80,
-                      width: 80,
-                      borderRadius: 20,
-                      marginTop: 8,
-                      marginBottom: 8,
-                      opacity: 0.7,
-                    }}
-                  />
-                );
-              })}
+              {imageURLs && (
+                <img
+                  src={imageURLs}
+                  style={{
+                    height: 80,
+                    width: 80,
+                    borderRadius: 20,
+                    marginTop: 8,
+                    marginBottom: 8,
+                    opacity: 0.7,
+                  }}
+                />
+              )}
               <p style={{ textAlign: "center" }}>
                 Upload a screenshot of deposit above
               </p>
@@ -176,12 +201,8 @@ const Deposit = () => {
                 keyboardType="numeric"
                 value={formikProps.values.amount}
               />
-              <SecondaryBtn
-                onClick={() => {
-                  console.log(images, imageURLs);
-                }}
-              >
-               <p>Done</p>
+              <SecondaryBtn disabled={loading} type="submit" onClick={formikProps.handleSubmit}>
+                <p>{loading ? "loading..." : "Done"}</p>
               </SecondaryBtn>
             </div>
           )}

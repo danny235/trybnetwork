@@ -38,7 +38,7 @@ const Login = () => {
         setIsFetching(false);
         navigate("/", { replace: true });
       }
-      console.log("hi");
+     
     } catch (err) {
       if (err.message === "Request failed with status code 401") {
         toast.error("Invalid credentials");

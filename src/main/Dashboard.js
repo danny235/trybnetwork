@@ -13,13 +13,13 @@ import {
 import { baseUrl, paths } from "../config/index";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser, updateUserFetching } from "../features/user/userSlice";
+import { updateUser, updateUserFetching, updateBalance } from "../features/user/userSlice";
 import { toast } from "react-toastify";
 import { colors } from "../components/colors";
 
 const Dashboard = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const { userProfile, token } = useSelector((state) => state.user);
+  const { userProfile, token, balance } = useSelector((state) => state.user);
   const menuRoutes = [
     {
       id: 1,
@@ -75,6 +75,23 @@ const Dashboard = () => {
       toast.error(err.message);
     }
   };
+  
+
+  const fetchBalance = async () => {
+  try{
+    const response = await axios.get(`${baseUrl}/${paths.history}/${userProfile?.profile?.slug}/${paths.balance}`,{
+      headers: {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    })
+    console.log(response)
+  }catch(err){
+    console.log(err.message)
+  }
+  }
+  useEffect(()=>{
+    fetchBalance()
+  },[])
   useEffect(() => {
     fetchUser();
   }, [token]);
