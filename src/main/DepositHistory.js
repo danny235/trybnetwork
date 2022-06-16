@@ -67,7 +67,7 @@ const DepositHistory = () => {
   try{
     const response = await axios.get(`${baseUrl}/${paths.history}/${userProfile?.profile?.slug}/${paths.deposit}`,{
       headers: {
-        headers: { Authorization: `Bearer ${token}` },
+         Authorization: `Bearer ${token}`
       }
     })
     console.log(response)

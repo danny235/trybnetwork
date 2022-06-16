@@ -79,12 +79,17 @@ const Dashboard = () => {
 
   const fetchBalance = async () => {
   try{
-    const response = await axios.get(`${baseUrl}/${paths.history}/${userProfile?.profile?.slug}/${paths.balance}`,{
+    const response = await axios.get(`${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.balance}`,{
       headers: {
-        headers: { Authorization: `Bearer ${token}` },
+         Authorization: `Bearer ${token}` 
       }
     })
     console.log(response)
+    if(response.status ===200) {
+      dispatch(
+        updateBalance(response?.data?.balance)
+      )
+    }
   }catch(err){
     console.log(err.message)
   }
@@ -138,7 +143,7 @@ const Dashboard = () => {
           <WhiteSection>
             <div>
               <p style={{ fontWeight: "bold" }}>My balance</p>
-              <p style={{ fontWeight: "bold" }}>100 USDT</p>
+              <p style={{ fontWeight: "bold" }}>{balance !== "" ? balance : "****"} USDT</p>
             </div>
             <hr />
             <div style={{ display: "flex", justifyContent: "space-between" }}>

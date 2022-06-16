@@ -41,7 +41,7 @@ const Deposit = () => {
       fd.append("amount_to_deposit", amount);
       const data = {
         wallet_address: walletId,
-        screenshot_payment: images,
+        screenshot_payment: images.name,
         amount_to_deposit: amount
       }
       console.log(data)
