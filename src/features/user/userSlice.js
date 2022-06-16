@@ -5,11 +5,11 @@ const initialState = {
   token: "",
   userFetching: false,
   refreshToken: "",
+  balance: "",
   invites: [],
   depositHistory: [],
   withdrawalHistory: [],
   betHistory: [],
-  balance: "",
 };
 
 export const userSlice = createSlice({

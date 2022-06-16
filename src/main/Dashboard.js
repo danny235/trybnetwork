@@ -84,7 +84,7 @@ const Dashboard = () => {
          Authorization: `Bearer ${token}` 
       }
     })
-    console.log(response)
+    
     if(response.status ===200) {
       dispatch(
         updateBalance(response?.data?.balance)

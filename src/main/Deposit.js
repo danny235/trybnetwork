@@ -11,6 +11,7 @@ import Input from "../components/Input";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { baseUrl, paths } from "../config";
+import { toast } from "react-toastify";
 
 const validationSchema = yup.object().shape({
   amount: yup.string().required().label("Amount"),
@@ -36,27 +37,38 @@ const Deposit = () => {
   const Paid = async (amount, token) => {
     try {
       const fd = new FormData();
-      fd.append("screenshot_payment", images, images.name);
+      fd.append("screenshot_payment", images);
       fd.append("wallet_address", walletId);
       fd.append("amount_to_deposit", amount);
+      fd.append("user", userProfile?.profile?.id);
       const data = {
+        user_id: userProfile?.profile?.id,
         wallet_address: walletId,
-        screenshot_payment: images.name,
-        amount_to_deposit: amount
-      }
-      console.log(data)
+        screenshot_payment: images,
+        amount_to_deposit: amount,
+      };
+      console.log(data);
       setLoading(true);
       const response = await axios.post(
-        `${baseUrl}/${paths.wallet}/${userProfile.profile.slug}/${paths.deposit}`,
-        data,
+        `${baseUrl}/${paths.wallet}/${paths.deposit}`,
+        fd,
         {
-          headers: { Authorization: `Bearer ${token}`, "Content-Type": 'multipart/form-data' },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+          transformRequest: (fd) => fd,
         }
       );
+      if (response.status === 201) {
+        toast.success("Deposit is processing");
+        setLoading(false);
+      }
       console.log(response);
     } catch (err) {
       setLoading(false);
       console.log(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -201,7 +213,11 @@ const Deposit = () => {
                 keyboardType="numeric"
                 value={formikProps.values.amount}
               />
-              <SecondaryBtn disabled={loading} type="submit" onClick={formikProps.handleSubmit}>
+              <SecondaryBtn
+                disabled={loading}
+                type="submit"
+                onClick={formikProps.handleSubmit}
+              >
                 <p>{loading ? "loading..." : "Done"}</p>
               </SecondaryBtn>
             </div>
