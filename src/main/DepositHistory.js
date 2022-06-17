@@ -3,65 +3,66 @@ import { Icon } from "@iconify/react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Container } from "../styles/styledUtils";
-import {useSelector} from "react-redux"
+import {useSelector, useDispatch} from "react-redux"
 import {updateDepositHistory} from "../features/user/userSlice"
 import {baseUrl, paths} from "../config/index"
 import axios from "axios"
 
 const DepositHistory = () => {
  const navigate = useNavigate();
-  const depositHistory = [
-    {
-      id: 1,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-    {
-      id: 2,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-    {
-      id: 3,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-    {
-      id: 4,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-    {
-      id: 5,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-    {
-      id: 6,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-    {
-      id: 7,
-      date: "Feb 12 2022",
-      time: "9:15am",
-      amount: "$100",
-      status: "Successful",
-    },
-  ];
-  const {userProfile, token} = useSelector(state=>state.user);
+  // const depositHistory = [
+  //   {
+  //     id: 1,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  //   {
+  //     id: 2,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  //   {
+  //     id: 3,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  //   {
+  //     id: 4,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  //   {
+  //     id: 5,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  //   {
+  //     id: 6,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  //   {
+  //     id: 7,
+  //     date: "Feb 12 2022",
+  //     time: "9:15am",
+  //     amount: "$100",
+  //     status: "Successful",
+  //   },
+  // ];
+  const {userProfile, token, depositHistory} = useSelector(state=>state.user);
+  const dispatch = useDispatch()
 
   const fetchDeposits = async () => {
   try{
@@ -70,10 +71,41 @@ const DepositHistory = () => {
          Authorization: `Bearer ${token}`
       }
     })
+    if(response.status === 200) {
+      dispatch(updateDepositHistory(response.data))
+    }
     console.log(response)
   }catch(err){
     console.log(err.message)
   }
+  }
+  const getDate = (stamp) => {
+    let date = new Date(stamp)
+    let monthList = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
+    
+    let month = monthList[date.getMonth()];
+    let day = date.getDate();
+    let year = date.getFullYear()
+    return `${month} ${day} ${year}`
+  }
+  const getTime = (stamp) => {
+    let time = new Date(stamp);
+    let hours = time.getHours();
+    let minutes = time.getMinutes();
+    return `${hours}:${minutes}`
   }
   useEffect(()=>{
     fetchDeposits()
@@ -122,17 +154,17 @@ const DepositHistory = () => {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell style={styles.cellStyle} component="th" scope="row">
-                  {row.date}
+                  {getDate(row?.trans_timestamp)}
                 </TableCell>
-                <TableCell style={styles.cellStyle} align="right">{row.time}</TableCell>
+                <TableCell style={styles.cellStyle} align="right">{getTime(row?.trans_timestamp)}</TableCell>
                 <TableCell
                   style={styles.cellStyle}
                   align="right"
                 >
-                  {row.amount}
+                  {row?.amount_to_deposit} USDT
                 </TableCell>
                 <TableCell style={styles.cellStyle} align="right">
-                  {row.status}
+                  {row.approved ? "Successful" : row.rejected ? "Failed" : "Ongoing"}
                 </TableCell>
               </TableRow>
             ))}

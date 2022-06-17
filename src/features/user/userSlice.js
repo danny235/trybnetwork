@@ -8,7 +8,7 @@ const initialState = {
   balance: "",
   invites: [],
   depositHistory: [],
-  withdrawalHistory: [],
+  withdrawalHistory: null,
   betHistory: [],
 };
 
