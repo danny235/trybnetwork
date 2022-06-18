@@ -10,7 +10,9 @@ const paths = {
     deposit: "deposit/",
     withdraw: "withdraw/",
     history: "wallet/history",
-    balance: "balance/"
+    balance: "balance/",
+    profileUpdate: "auth/profile_update/",
+    passwordUpdate: "auth/password/change/"
 }
 
 export {baseUrl, paths}

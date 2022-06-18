@@ -17,6 +17,8 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import Input from "../components/Input";
 import { toast } from "react-toastify";
+
+
 const passwordSchema = yup.object().shape({
   old_password: yup
     .string()
@@ -41,8 +43,8 @@ const pinSchema = yup.object().shape({
   new_pin: yup
     .string()
     .required()
-    .label("Password")
-    .min(8, "Seems a bit short"),
+    .label("Pin")
+    .min(3, "Seems a bit short"),
   confirm_pin: yup
     .string()
     .required()
@@ -57,11 +59,56 @@ const Profile = () => {
   const dispatch = useDispatch();
   const { userProfile, token } = useSelector((state) => state.user);
   const [passwordFormOpen, setPasswordFormOpen] = useState(false);
+  const [passwordFormLoading, setPasswordFormLoading] = useState(false);
   const [pinFormOpen, setPinFormOpen] = useState(false);
+  const [pinFormLoading, setPinFormLoading] = useState(false);
+
+  const submitPassword = async (data, actions) => {
+    setPasswordFormLoading(true)
+    try{
+      
+      const response = await axios.post(`${baseUrl}/${paths.passwordUpdate}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(response.status === 200) {
+        actions.resetForm()
+        setPasswordFormLoading(false)
+        toast.success("Password changed successfully")
+      }
+    } catch (err) {
+      setPasswordFormLoading(false)
+      toast.error(err.message)
+      console.log(err.message)
+    }
+  }
+  const submitPin = async (data, actions) => {
+    setPinFormLoading(true)
+    try{
+      
+      const response = await axios.patch(`${baseUrl}/${paths.profileUpdate}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      if(response.status === 200) {
+        actions.resetForm()
+        setPinFormLoading(false)
+        toast.success("Pin created successfully")
+      }
+    } catch (err) {
+      setPinFormLoading(false)
+      toast.error(err.message)
+      console.log(err.message)
+    }
+  }
   const handleLogOut = () => {
     navigate("/", { replace: true });
     dispatch(logOutUser());
   };
+
+
 
   useEffect(() => {
     if (token === "") {
@@ -168,7 +215,11 @@ const Profile = () => {
               confirm_password: "",
             }}
             onSubmit={(values, actions) => {
-              const person = values;
+              const person = {
+                new_password: values.new_password,
+                new_password_confirm: values.confirm_password
+              }
+              submitPassword(person, actions)
             }}
             validationSchema={passwordSchema}
           >
@@ -178,14 +229,14 @@ const Profile = () => {
                   type="password"
                   formikProps={formikProps}
                   formikKey="old_password"
-                  placeholder="Password"
+                  placeholder="Enter old password"
                   value={formikProps.values.old_password}
                 />
                 <Input
                   type="password"
                   formikProps={formikProps}
                   formikKey="new_password"
-                  placeholder="Password"
+                  placeholder="Enter new password"
                   value={formikProps.values.new_password}
                 />
                 <Input
@@ -197,8 +248,10 @@ const Profile = () => {
                 />
                 <SecondaryBtn
                   style={{ color: "#fff", backgroundColor: "#000" }}
+                  onClick={formikProps.handleSubmit}
+                  disabled={passwordFormLoading}
                 >
-                  <p>Save changes</p>
+                  <p>{passwordFormLoading? "Loading..." : "Save changes"}</p>
                 </SecondaryBtn>
               </div>
             )}
@@ -218,30 +271,37 @@ const Profile = () => {
               confirm_pin: "",
             }}
             onSubmit={(values, actions) => {
-              const person = values;
+              const person = {
+                transaction_pin: values.new_pin
+              }
+              submitPin(person, actions)
             }}
             validationSchema={pinSchema}
           >
             {(formikProps) => (
               <div>
                 <Input
-                  type="password"
+                  type="number"
                   formikProps={formikProps}
                   formikKey="new_pin"
                   placeholder="Enter new pin"
                   value={formikProps.values.new_pin}
+                  maxLength={4}
                 />
                 <Input
-                  type="password"
+                  type="number"
                   formikProps={formikProps}
                   formikKey="confirm_pin"
                   placeholder="Confirm pin"
                   value={formikProps.values.confirm_pin}
+                  maxLength={4}
                 />
                 <SecondaryBtn
                   style={{ color: "#fff", backgroundColor: "#000" }}
+                  onClick={formikProps.handleSubmit}
+                  disabled={pinFormLoading}
                 >
-                  <p>Logout</p>
+                  <p>{pinFormLoading ? "Loading..." : "Save changes"}</p>
                 </SecondaryBtn>
               </div>
             )}
