@@ -12,12 +12,14 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import Backdrop from "@mui/material/Backdrop";
-import MenuList from "../components/MenuList";
+import {useSelector} from "react-redux"
+
 
 const HomeScreen = () => {
   const [latestPrice, setLatestPrice] = useState(0);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate()
+  const {userProfile, token, balance}= useSelector(state=>state.user)
 
   useEffect(() => {
     fetchData().then((chartData) => {
@@ -173,7 +175,7 @@ const HomeScreen = () => {
           <div>
             <p
               style={{ ...styles.textStyle, textAlign: "right" }}
-            >{`Bal: $${100}`}</p>
+            >{`Bal: ${balance} USDT`}</p>
             <AmountInput placeholder="Enter amount" />
             <p style={{ ...styles.textStyle }}>{`Time remaining: 1:20`}</p>
           </div>
@@ -208,8 +210,17 @@ const HomeScreen = () => {
           </div>
           <div></div>
         </div>
-        <Backdrop open={open}>
-          <CustomModal height={300} width={85}>
+        <Dialog fullWidth={true}
+          onBackdropClick={() => setOpen(false)} open={open}>
+          <div style={{
+            height: 300,
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: 30
+          }}>
             <h3 style={{ textAlign: "center", marginBottom: 10 }}>
               Do you want to continue?
             </h3>
@@ -234,8 +245,8 @@ const HomeScreen = () => {
                 Cancel
               </CustomColoredBtn>
             </div>
-          </CustomModal>
-        </Backdrop>
+          </div>
+        </Dialog>
       </Container>
     </div>
   );

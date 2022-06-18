@@ -12,14 +12,18 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Container } from "../styles/styledUtils";
 import { useSelector, useDispatch } from "react-redux";
-import { updateWithdrawalHistory } from "../features/user/userSlice";
+import { updateWithdrawalHistory } from "../features/wallet/walletSlice";
 import { baseUrl, paths } from "../config/index";
 import axios from "axios";
+import { getTime, getDate } from "../utils";
 
 const WithdrawalHistory = () => {
   const navigate = useNavigate();
-  const { userProfile, token, withdrawalHistory } = useSelector(
+  const { userProfile, token } = useSelector(
     (state) => state.user
+  );
+  const { withdrawalHistory } = useSelector(
+    (state) => state.wallet
   );
  
   const dispatch = useDispatch();
@@ -36,7 +40,7 @@ const WithdrawalHistory = () => {
       );
       console.log(response);
       if (response.status == 200) {
-        dispatch(updateWithdrawalHistory(response.data.data));
+        dispatch(updateWithdrawalHistory(response.data));
       }
     } catch (err) {
       console.log(err.message);
@@ -45,57 +49,7 @@ const WithdrawalHistory = () => {
   useEffect(() => {
     fetchWithdrawal();
   }, []);
-  // const withdrawalHistory = [
-  //   {
-  //     id: 1,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 2,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 3,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 4,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 5,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 6,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 7,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  // ];
+  
   return (
     <div>
       <Container>
@@ -145,16 +99,16 @@ const WithdrawalHistory = () => {
                       component="th"
                       scope="row"
                     >
-                      {row.date}
+                      {getDate(row?.trans_timestamp)}
                     </TableCell>
                     <TableCell style={styles.cellStyle} align="right">
-                      {row.time}
+                      {getTime(row?.trans_timestamp)}
                     </TableCell>
                     <TableCell style={styles.cellStyle} align="right">
-                      {row.amount}
+                      {row.amount_to_withdraw} USDT
                     </TableCell>
                     <TableCell style={styles.cellStyle} align="right">
-                      {row.status}
+                      {row.approved ? "Successful" : row.rejected ? "Failed" : "Ongoing"}
                     </TableCell>
                   </TableRow>
                 ))}

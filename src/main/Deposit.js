@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { addressQR } from "../assets";
 import { Container, SecondaryBtn, UploadField } from "../styles/styledUtils";
@@ -25,6 +25,7 @@ const Deposit = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { userProfile, token } = useSelector((state) => state.user);
+  const [reducerValue, forceUpdate] = useReducer((x) => x + 1, 0);
 
   useEffect(() => {
     if (images === null) return;
@@ -32,9 +33,9 @@ const Deposit = () => {
     newImageUrls = URL.createObjectURL(images);
     setImageURLs(newImageUrls);
     return () => {};
-  }, []);
+  }, [reducerValue]);
 
-  const Paid = async (amount, token) => {
+  const Paid = async (amount, token, actions) => {
     try {
       const fd = new FormData();
       fd.append("screenshot_payment", images);
@@ -63,6 +64,10 @@ const Deposit = () => {
       if (response.status === 201) {
         toast.success("Deposit is processing");
         setLoading(false);
+        actions?.resetForm()
+        setImages(null)
+        setImageURLs(null)
+        forceUpdate()
       }
       console.log(response);
     } catch (err) {
@@ -159,7 +164,8 @@ const Deposit = () => {
         <Formik
           initialValues={{ amount: "" }}
           onSubmit={(values, actions) => {
-            Paid(values.amount, token);
+            Paid(values.amount, token, actions);
+            
           }}
           validationSchema={validationSchema}
         >
@@ -168,6 +174,7 @@ const Deposit = () => {
               <UploadField
                 onChange={(e) => {
                   setImages(e.target.files[0]);
+                  forceUpdate()
                   if (images === null) return;
                   let newImageUrls;
                   newImageUrls = URL.createObjectURL(images);
@@ -177,6 +184,7 @@ const Deposit = () => {
                 type="file"
                 accept="image/*"
               />
+              
               <svg
                 style={{ position: "absolute", left: 100, top: 50 }}
                 width="53"
@@ -214,7 +222,7 @@ const Deposit = () => {
                 value={formikProps.values.amount}
               />
               <SecondaryBtn
-                disabled={loading}
+                disabled={loading ? true : images === null ? true : false}
                 type="submit"
                 onClick={formikProps.handleSubmit}
               >

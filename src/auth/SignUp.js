@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { Container, SecondaryBtn } from "../styles/styledUtils";
-import * as yup from "yup";
-import { Formik } from "formik";
-import Input from "../components/Input";
 import { Icon } from "@iconify/react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { baseUrl, paths } from "../config/index";
+import * as yup from "yup";
+import { Formik } from "formik";
+import Input from "../components/Input";
 import { toast } from "react-toastify";
 import {updateToken, updateRefreshToken} from "../features/user/userSlice"
 
@@ -163,7 +163,7 @@ const SignUp = () => {
                 formikProps={formikProps}
                 formikKey="referral_code"
                 placeholder="123456"
-                type="numeric"
+                type="number"
                 value={formikProps.values.referral_code}
                 maxLength={7}
               />

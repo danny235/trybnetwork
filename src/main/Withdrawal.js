@@ -1,10 +1,14 @@
 import { Icon } from "@iconify/react";
-import React from "react";
+import React, {useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, GreenSection, SecondaryBtn } from "../styles/styledUtils";
 import * as yup from "yup";
 import { Formik } from "formik";
 import BottomBorderInput from "../components/BottomBorderInput";
+import {useSelector} from "react-redux"
+import {baseUrl, paths} from "../config/index"
+import axios from "axios"
+import { toast } from "react-toastify";
 
 const validationSchema = yup.object().shape({
   wallet_address: yup.string().required().label("Wallet Address"),
@@ -13,11 +17,38 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .label("Withdrawal Pin")
-    .min(5, "Seems a bit short").max(5, "That's a lot"),
+    .min(4, "Seems a bit short").max(4, "That's a lot"),
 });
 
 const Withdrawal = () => {
   const navigate = useNavigate();
+  const {token, balance, userProfile} = useSelector(state=>state.user)
+  const [loading, setLoading] = useState(false)
+  const withdraw = async (data, actions) => {
+    setLoading(true)
+    try{
+      const response = await axios.post(`${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.withdraw}`, data, {
+       headers: {
+         Authorization: `Bearer ${token}`
+       }
+      })
+
+      if (response.status === 200) {
+
+        actions?.resetForm()
+        toast.success("Withdrawal processing!")
+        setLoading(false)
+      }
+      setLoading(false)
+    } catch(err) {
+      setLoading(false)
+      if (err.message === "Request failed with status code 400") {
+        return toast.error("Pin not correct")
+      } 
+     
+      toast.error(err.message)
+    }
+  }
   return (
     <Container>
       <div
@@ -58,7 +89,13 @@ const Withdrawal = () => {
         <Formik
           initialValues={{ wallet_address: "", amount: "", password: "" }}
           onSubmit={(values, actions) => {
-            const person = values;
+            const person = {
+              wallet_address: values.wallet_address,
+              amount_to_withdraw: values.amount,
+              withdrawal_pin: parseInt(values.password)
+            };
+            withdraw(person, actions)
+
           }}
           validationSchema={validationSchema}
         >
@@ -83,7 +120,7 @@ const Withdrawal = () => {
               />
               <div style={{display: "flex"}}>
                 <p style={{color: "#fff", flex: 1, fontSize: 12}}>0.3% fees applies</p>
-                <p style={{color: "#fff", fontSize: 12 }}>Bal: 200 USDT</p>
+                <p style={{color: "#fff", fontSize: 12 }}>Bal: {balance} USDT</p>
               </div>
               </div>
               <div style={{ position: "relative", marginBottom: 100 }}>
@@ -91,14 +128,15 @@ const Withdrawal = () => {
                   type="password"
                   formikProps={formikProps}
                   formikKey="password"
-                  placeholder="Enter 5 digit withdrawal pin"
+                  placeholder="Enter 4 digit withdrawal pin"
                   value={formikProps.values.password}
-                  maxLength={5}
+                  maxLength={4}
                 />
+                <p style={{color: "#fff", flex: 1, fontSize: 12}}>Default: 1234</p>
               </div>
             </GreenSection>
-              <SecondaryBtn>
-                <p>Proceed</p>
+              <SecondaryBtn disabled={loading} onClick={formikProps.handleSubmit}>
+                <p>{loading ? "Loading..." : "Proceed"}</p>
               </SecondaryBtn>
             </div>
           )}

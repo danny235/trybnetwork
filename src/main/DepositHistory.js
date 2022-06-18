@@ -4,64 +4,15 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import { useNavigate } from "react-router-dom";
 import { Container } from "../styles/styledUtils";
 import {useSelector, useDispatch} from "react-redux"
-import {updateDepositHistory} from "../features/user/userSlice"
+import {updateDepositHistory} from "../features/wallet/walletSlice"
 import {baseUrl, paths} from "../config/index"
 import axios from "axios"
 
 const DepositHistory = () => {
  const navigate = useNavigate();
-  // const depositHistory = [
-  //   {
-  //     id: 1,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 2,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 3,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 4,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 5,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 6,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  //   {
-  //     id: 7,
-  //     date: "Feb 12 2022",
-  //     time: "9:15am",
-  //     amount: "$100",
-  //     status: "Successful",
-  //   },
-  // ];
-  const {userProfile, token, depositHistory} = useSelector(state=>state.user);
+  
+  const {userProfile, token} = useSelector(state=>state.user);
+  const { depositHistory} = useSelector(state=>state.wallet);
   const dispatch = useDispatch()
 
   const fetchDeposits = async () => {
@@ -105,7 +56,7 @@ const DepositHistory = () => {
     let time = new Date(stamp);
     let hours = time.getHours();
     let minutes = time.getMinutes();
-    return `${hours}:${minutes}`
+    return `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes}`
   }
   useEffect(()=>{
     fetchDeposits()
@@ -137,6 +88,8 @@ const DepositHistory = () => {
             <h2 style={{ marginLeft: 10 }}>Deposit history</h2>
           </div>
         </div>
+        {depositHistory?.length !== 0 ? (
+
         <TableContainer component={Paper}>
         <Table sx={{ minWidth: "100%" }} aria-label="simple table">
           <TableHead style={{backgroundColor: "#ccc"}}>
@@ -148,7 +101,7 @@ const DepositHistory = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {depositHistory.map((row) => (
+            {depositHistory?.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -171,6 +124,7 @@ const DepositHistory = () => {
           </TableBody>
         </Table>
       </TableContainer>
+        ) :  <p style={{textAlign: "center"}}>No deposit history</p>}
       </Container>
     </div>
   );
