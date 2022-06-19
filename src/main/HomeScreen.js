@@ -11,16 +11,20 @@ import {
 } from "../styles/styledUtils";
 import { Link, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
-import Backdrop from "@mui/material/Backdrop";
-import {useSelector} from "react-redux"
-
+import { useCountdown } from "../hooks/useCountdown";
+import { useSelector } from "react-redux";
 
 const HomeScreen = () => {
   const [latestPrice, setLatestPrice] = useState(0);
   const [open, setOpen] = useState(false);
-  const navigate = useNavigate()
-  const {userProfile, token, balance}= useSelector(state=>state.user)
+  const navigate = useNavigate();
+  const { userProfile, token, balance } = useSelector((state) => state.user);
+  const FIVE_MINUTES_IN_MS = new Date(5 * 60 * 1000);
+  const NOW_IN_MS = new Date();
 
+  const timeAfterFiveMinutes = +NOW_IN_MS + +FIVE_MINUTES_IN_MS;
+
+  const [minutes, seconds] = useCountdown(timeAfterFiveMinutes);
   useEffect(() => {
     fetchData().then((chartData) => {
       initChart(chartData);
@@ -134,15 +138,14 @@ const HomeScreen = () => {
           marginBottom: 10,
           fontWeight: 500,
           fontSize: 22,
-          paddingLeft: 12
+          paddingLeft: 12,
         }}
       >
         <Icon
           icon="akar-icons:arrow-back"
           style={{ width: 30, height: 30, marginTop: -8, marginRight: 10 }}
           onClick={() => navigate(-1)}
-        />
-        {" "}
+        />{" "}
         Trade
       </div>
       <Container>
@@ -153,7 +156,6 @@ const HomeScreen = () => {
             fontSize: 17,
             fontWeight: 400,
             marginBottom: 10,
-           
           }}
         >
           <Icon
@@ -177,7 +179,9 @@ const HomeScreen = () => {
               style={{ ...styles.textStyle, textAlign: "right" }}
             >{`Bal: ${balance} USDT`}</p>
             <AmountInput placeholder="Enter amount" />
-            <p style={{ ...styles.textStyle }}>{`Time remaining: 1:20`}</p>
+            <p
+              style={{ ...styles.textStyle }}
+            >{`Time remaining: ${minutes}:${seconds}`}</p>
           </div>
           <div>
             <div
@@ -210,17 +214,22 @@ const HomeScreen = () => {
           </div>
           <div></div>
         </div>
-        <Dialog fullWidth={true}
-          onBackdropClick={() => setOpen(false)} open={open}>
-          <div style={{
-            height: 300,
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 30
-          }}>
+        <Dialog
+          fullWidth={true}
+          onBackdropClick={() => setOpen(false)}
+          open={open}
+        >
+          <div
+            style={{
+              height: 300,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 30,
+            }}
+          >
             <h3 style={{ textAlign: "center", marginBottom: 10 }}>
               Do you want to continue?
             </h3>

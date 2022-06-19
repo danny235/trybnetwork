@@ -1,13 +1,13 @@
 import { Icon } from "@iconify/react";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Container, GreenSection, SecondaryBtn } from "../styles/styledUtils";
 import * as yup from "yup";
 import { Formik } from "formik";
 import BottomBorderInput from "../components/BottomBorderInput";
-import {useSelector} from "react-redux"
-import {baseUrl, paths} from "../config/index"
-import axios from "axios"
+import { useSelector } from "react-redux";
+import { baseUrl, paths } from "../config/index";
+import axios from "axios";
 import { toast } from "react-toastify";
 
 const validationSchema = yup.object().shape({
@@ -17,38 +17,42 @@ const validationSchema = yup.object().shape({
     .string()
     .required()
     .label("Withdrawal Pin")
-    .min(4, "Seems a bit short").max(4, "That's a lot"),
+    .min(4, "Seems a bit short")
+    .max(4, "That's a lot"),
 });
 
 const Withdrawal = () => {
   const navigate = useNavigate();
-  const {token, balance, userProfile} = useSelector(state=>state.user)
-  const [loading, setLoading] = useState(false)
+  const { token, balance, userProfile } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
   const withdraw = async (data, actions) => {
-    setLoading(true)
-    try{
-      const response = await axios.post(`${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.withdraw}`, data, {
-       headers: {
-         Authorization: `Bearer ${token}`
-       }
-      })
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.withdraw}`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
-
-        actions?.resetForm()
-        toast.success("Withdrawal processing!")
-        setLoading(false)
+        actions?.resetForm();
+        toast.success("Withdrawal processing!");
+        setLoading(false);
       }
-      setLoading(false)
-    } catch(err) {
-      setLoading(false)
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
       if (err.message === "Request failed with status code 400") {
-        return toast.error("Pin not correct")
-      } 
-     
-      toast.error(err.message)
+        return toast.error(err?.response?.data?.detail[0]);
+      }
+
+      toast.error(err.message);
     }
-  }
+  };
   return (
     <Container>
       <div
@@ -92,56 +96,63 @@ const Withdrawal = () => {
             const person = {
               wallet_address: values.wallet_address,
               amount_to_withdraw: values.amount,
-              withdrawal_pin: parseInt(values.password)
+              withdrawal_pin: parseInt(values.password),
             };
-            withdraw(person, actions)
-
+            withdraw(person, actions);
           }}
           validationSchema={validationSchema}
         >
           {(formikProps) => (
             <div>
-
-            <GreenSection style={{marginBottom: 100}}>
-              <BottomBorderInput
-                formikProps={formikProps}
-                formikKey="wallet_address"
-                placeholder="Enter wallet address"
-                value={formikProps.values.wallet_address}
-              />
-              <div>
-
-              <BottomBorderInput
-                formikProps={formikProps}
-                formikKey="amount"
-                placeholder="Enter amount"
-                type="number"
-                value={formikProps.values.amount}
-              />
-              <div style={{display: "flex"}}>
-                <p style={{color: "#fff", flex: 1, fontSize: 12}}>0.3% fees applies</p>
-                <p style={{color: "#fff", fontSize: 12 }}>Bal: {balance} USDT</p>
-              </div>
-              </div>
-              <div style={{ position: "relative", marginBottom: 100 }}>
+              <GreenSection style={{ marginBottom: 100 }}>
                 <BottomBorderInput
-                  type="password"
                   formikProps={formikProps}
-                  formikKey="password"
-                  placeholder="Enter 4 digit withdrawal pin"
-                  value={formikProps.values.password}
-                  maxLength={4}
+                  formikKey="wallet_address"
+                  placeholder="Enter wallet address"
+                  value={formikProps.values.wallet_address}
                 />
-                <p style={{color: "#fff", flex: 1, fontSize: 12}}>Default: 1234</p>
-              </div>
-            </GreenSection>
-              <SecondaryBtn disabled={loading} onClick={formikProps.handleSubmit}>
+                <div>
+                  <BottomBorderInput
+                    formikProps={formikProps}
+                    formikKey="amount"
+                    placeholder="Enter amount"
+                    type="number"
+                    value={formikProps.values.amount}
+                  />
+                  <div style={{ display: "flex" }}>
+                    <p style={{ color: "#fff", flex: 1, fontSize: 12 }}>
+                      0.3% fees applies
+                    </p>
+                    <p style={{ color: "#fff", fontSize: 12 }}>
+                      Bal: {balance} USDT
+                    </p>
+                  </div>
+                </div>
+                <div style={{ position: "relative", marginBottom: 100 }}>
+                  <BottomBorderInput
+                    formikProps={formikProps}
+                    formikKey="password"
+                    placeholder="Enter 4 digit transaction pin"
+                    value={formikProps.values.password}
+                    type="tel"
+                    maxLength="4"
+
+                  />
+                  <p style={{ color: "#fff", flex: 1, fontSize: 12 }}>
+                    Default: 1234
+                  </p>
+                </div>
+              </GreenSection>
+              <SecondaryBtn
+                disabled={loading}
+                onClick={formikProps.handleSubmit}
+                type="button"
+              >
                 <p>{loading ? "Loading..." : "Proceed"}</p>
               </SecondaryBtn>
             </div>
           )}
         </Formik>
-      
       </div>
     </Container>
   );
