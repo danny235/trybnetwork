@@ -29,20 +29,21 @@ export const userSlice = createSlice({
     updateInvites: (state, action) => {
       state.invites = action.payload;
     },
-    logOutUser: (state) => {
-      state.refreshToken = "";
-      state.token = "";
-      state.userProfile = {};
-      state.invites = [];
-      storage.removeItem("persist:root");
-    },
-    
     updateBetHistory: (state, action) => {
       state.betHistory = action.payload;
     },
     updateBalance: (state, action) => {
       state.balance = action.payload;
     },
+    logOutUser: (state) => {
+      state.refreshToken = "";
+      state.token = "";
+      state.userProfile = {};
+      state.invites = [];
+      state.betHistory =[]
+      storage.removeItem("persist:root");
+    },
+    
   },
 });
 

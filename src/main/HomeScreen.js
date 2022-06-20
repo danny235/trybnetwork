@@ -1,30 +1,39 @@
 import React, { useState, useEffect } from "react";
-import Brand from "../components/Brand";
 import { Icon } from "@iconify/react";
-import callAPI from "../utils";
+import { updateChart, fetchData, initChart } from "../utils";
 import { colors } from "../components/colors";
 import {
   AmountInput,
   Container,
   CustomColoredBtn,
-  CustomModal,
 } from "../styles/styledUtils";
 import { Link, useNavigate } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
 import { useCountdown } from "../hooks/useCountdown";
 import { useSelector } from "react-redux";
+import axios from "axios";
+import { baseUrl, paths } from "../config/index";
+import { toast } from "react-toastify";
 
 const HomeScreen = () => {
   const [latestPrice, setLatestPrice] = useState(0);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const { userProfile, token, balance } = useSelector((state) => state.user);
-  const FIVE_MINUTES_IN_MS = new Date(5 * 60 * 1000);
+  const [startTime, setStartTime] = useState(0);
+  const [close, setClose] = useState(false);
+  let FIVE_MINUTES_IN_S = startTime * 60;
   const NOW_IN_MS = new Date();
 
-  const timeAfterFiveMinutes = +NOW_IN_MS + +FIVE_MINUTES_IN_MS;
+  const timeAfterFiveMinutes = +FIVE_MINUTES_IN_S;
+  const [betValues, setBetValues] = useState({
+    amount: "",
+    bet_type: "",
+    bet_slug: null
+  })
+ 
 
-  const [minutes, seconds] = useCountdown(timeAfterFiveMinutes);
+  const [minutes, seconds] = useCountdown(FIVE_MINUTES_IN_S);
   useEffect(() => {
     fetchData().then((chartData) => {
       initChart(chartData);
@@ -45,89 +54,48 @@ const HomeScreen = () => {
     };
   }, []);
 
-  const fetchData = async () => {
-    let data = { index: [], price: [], volumes: [] };
-    let result = await callAPI(
-      "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1&interval=1m"
-    );
-    for (const item of result.prices) {
-      data.index.push(item[0]);
-      data.price.push(item[1]);
+  const placeBet = async (betValues, slug) => {
+    try {
+      const { data, status } = await axios.post(
+        `${baseUrl}/${paths.createBet}/${slug}/`,
+        betValues
+      );
+      if (status === 200) {
+        toast.success("Trade placed");
+      }
+      console.log(data);
+    } catch (err) {
+      if (err.message === "Request failed with status code 400") {
+        return toast.error(err?.response?.data?.detail[0]);
+      }
+      console.log(err.message);
+      toast.error(err.message);
     }
-    for (const item of result.total_volumes) data.volumes.push(item[1]);
-    return data;
   };
 
-  const initChart = (data) => {
-    let trace_price = {
-      name: "Price ($)",
-      x: data.index.map((t) => new Date(t)),
-      y: data.price,
-      xaxis: "x",
-      yaxis: "y1",
-      type: "scatter",
-      mode: "markers+lines",
-      marker: { color: colors.secondary, size: 1 },
-    };
-    let trace_volumes = {
-      name: "Volumne ($B)",
-      x: data.index.map((t) => new Date(t)),
-      y: data.volumes,
-      xaxis: "x",
-      yaxis: "y2",
-      type: "lines",
-      fill: "tozeroy",
-      barmode: "relative",
-      marker: {
-        color: colors.secondary,
-        opacity: 0.7,
-      },
-    };
-    let layout = {
-      autosize: true,
-      height: "100%",
-      margin: {
-        l: 50,
-        r: 20,
-        t: 35,
-        pad: 3,
-      },
-      showlegend: false,
-      xaxis: {
-        domain: [1, 1],
-        anchor: "y2",
-      },
-      yaxis: {
-        domain: [0.1, 1],
-        anchor: "x",
-      },
-      yaxis2: {
-        showticklabels: false,
-        domain: [0, 0.1],
-        anchor: "x",
-      },
-      grid: {
-        roworder: "bottom to top",
-      },
-    };
-    let config = { responsive: true };
-    let series = [trace_price, trace_volumes];
-    window.Plotly.newPlot("chart", series, layout, config);
+  const fetchCurrentSession = async () => {
+    try{
+
+      const { data, status } = await axios.get(`${baseUrl}/${paths.session}/`);
+      console.log(data, status);
+      let time
+      if (status === 200) {
+        setBetValues({...betValues, bet_slug: data?.current_session_slug})
+        
+        time = parseFloat(data?.remaining_time)
+        setStartTime(time)
+      }
+    } catch(err) {
+      console.log(err.message)
+    }
   };
 
-  const updateChart = (data) => {
-    let trace_price = {
-      x: [data.index.map((t) => new Date(t))],
-      y: [data.price],
-    };
-    let trace_volumes = {
-      x: [data.index.map((t) => new Date(t))],
-      y: [data.volumes],
-    };
+  useEffect(() => {
+    fetchCurrentSession();
+  }, []);
 
-    window.Plotly.update("chart", trace_price, {}, 0);
-    window.Plotly.update("chart", trace_volumes, {}, 1);
-  };
+  const timeLeft = minutes + seconds;
+  // console.log("Time", timeLeft)
   return (
     <div>
       <div
@@ -178,11 +146,25 @@ const HomeScreen = () => {
             <p
               style={{ ...styles.textStyle, textAlign: "right" }}
             >{`Bal: ${balance} USDT`}</p>
-            <AmountInput placeholder="Enter amount" />
+            <AmountInput placeholder="Enter amount" onChange={(text)=> {
+              setBetValues({...betValues, amount: parseInt(text.target.value)})
+            }} />
             <p
               style={{ ...styles.textStyle }}
             >{`Time remaining: ${minutes}:${seconds}`}</p>
           </div>
+          {timeLeft === "0000" ? (
+            <p
+              style={{
+                color: colors.red,
+                fontWeight: "bold",
+                textAlign: "center",
+              }}
+            >
+              Compiling bets! Please wait for timer to restart
+            </p>
+          ) : null}
+
           <div>
             <div
               style={{
@@ -193,14 +175,22 @@ const HomeScreen = () => {
               }}
             >
               <CustomColoredBtn
+                disabled={timeLeft === "0000" ? true : false}
                 bgColor={colors.secondary}
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setBetValues({...betValues, bet_type: "big"})
+                  setOpen(true)
+                }}
               >
                 Big
               </CustomColoredBtn>
               <CustomColoredBtn
+                disabled={timeLeft === "0000" ? true : false}
                 bgColor={colors.red}
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setBetValues({...betValues, bet_type: "small"})
+                  setOpen(true)
+                }}
               >
                 Small
               </CustomColoredBtn>
@@ -243,7 +233,11 @@ const HomeScreen = () => {
             >
               <CustomColoredBtn
                 bgColor={colors.secondary}
-                onClick={() => setOpen(true)}
+                onClick={() => {
+                  setOpen(true)
+                  console.log(betValues)
+                  placeBet(betValues, userProfile?.profile?.slug)
+                }}
               >
                 Proceed
               </CustomColoredBtn>

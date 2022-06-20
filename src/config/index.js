@@ -14,7 +14,8 @@ const paths = {
     profileUpdate: "auth/profile_update/",
     passwordUpdate: "auth/password/change/",
     session: "bet/1234/session",
-    createBet: "bet"
+    createBet: "bet",
+    betList: "list/"
 }
 
 export {baseUrl, paths}

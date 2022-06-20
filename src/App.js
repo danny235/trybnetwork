@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { authRoutes, unAuthRoutes } from "./components/routes";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useSelector} from "react-redux"
 
 function App() {
-  const [user, setUser] = useState({});
-  const isUser = Object.keys(user).length;
   const {token} = useSelector(state=>state.user)
-  console.log(token)
+  
 
   return (
     <div>
