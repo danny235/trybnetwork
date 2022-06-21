@@ -162,8 +162,7 @@ const SignUp = () => {
               <Input
                 formikProps={formikProps}
                 formikKey="referral_code"
-                placeholder="123456"
-                type="number"
+                placeholder="Enter refferal code"
                 value={formikProps.values.referral_code}
                 maxLength={7}
               />
