@@ -165,7 +165,7 @@ const BetHistory = () => {
                     style={{ ...styles.cellStyle, color: colors.secondary }}
                     align="right"
                   >
-                    {row.outcome === "win" ? `+${row.profit}` : `-${row?.profit}`}
+                    {row.outcome === "win" ? `+${row.profit}` : "-"}
                   </TableCell>
                 </TableRow>
               ))}
