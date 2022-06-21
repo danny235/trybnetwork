@@ -22,6 +22,7 @@ const HomeScreen = () => {
   const { userProfile, token, balance } = useSelector((state) => state.user);
   const [startTime, setStartTime] = useState(0);
   const [close, setClose] = useState(false);
+  const [betting, setBetting] = useState(false)
   let FIVE_MINUTES_IN_S = startTime;
   const [betValues, setBetValues] = useState({
     amount: "",
@@ -52,19 +53,26 @@ const HomeScreen = () => {
   }, []);
 
   const placeBet = async (betValues, slug) => {
+    setBetting(true)
     try {
       const { data, status } = await axios.post(
         `${baseUrl}/${paths.createBet}/${slug}/`,
         betValues
       );
       if (status === 200) {
+        setBetting(false)
+        setOpen(false)
         toast.success("Trade placed");
       }
       console.log(data);
     } catch (err) {
       if (err.message === "Request failed with status code 400") {
+        setBetting(false)
+        setOpen(false)
         return toast.error(err?.response?.data?.detail[0]);
       }
+      setBetting(false)
+      setOpen(false)
       console.log(err.message);
       toast.error(err.message);
     }
@@ -235,12 +243,14 @@ const HomeScreen = () => {
                   console.log(betValues)
                   placeBet(betValues, userProfile?.profile?.slug)
                 }}
+                disabled={betting}
               >
                 Proceed
               </CustomColoredBtn>
               <CustomColoredBtn
                 bgColor={colors.red}
                 onClick={() => setOpen(false)}
+                disabled={betting}
               >
                 Cancel
               </CustomColoredBtn>
