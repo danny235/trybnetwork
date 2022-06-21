@@ -49,6 +49,9 @@ const Withdrawal = () => {
       if (err.message === "Request failed with status code 400") {
         return toast.error(err?.response?.data?.detail[0]);
       }
+      if (err.message === "Request failed with status code 500") {
+        return toast.error(err?.response?.data?.detail[0]);
+      }
 
       toast.error(err.message);
     }

@@ -25,7 +25,6 @@ const DepositHistory = () => {
     if(response.status === 200) {
       dispatch(updateDepositHistory(response.data))
     }
-    console.log(response)
   }catch(err){
     console.log(err.message)
   }

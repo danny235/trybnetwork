@@ -38,7 +38,6 @@ const WithdrawalHistory = () => {
           },
         }
       );
-      console.log(response);
       if (response.status == 200) {
         dispatch(updateWithdrawalHistory(response.data));
       }

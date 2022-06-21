@@ -22,10 +22,7 @@ const HomeScreen = () => {
   const { userProfile, token, balance } = useSelector((state) => state.user);
   const [startTime, setStartTime] = useState(0);
   const [close, setClose] = useState(false);
-  let FIVE_MINUTES_IN_S = startTime * 60;
-  const NOW_IN_MS = new Date();
-
-  const timeAfterFiveMinutes = +FIVE_MINUTES_IN_S;
+  let FIVE_MINUTES_IN_S = startTime;
   const [betValues, setBetValues] = useState({
     amount: "",
     bet_type: "",

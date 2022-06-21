@@ -13,7 +13,11 @@ import {
 import { baseUrl, paths } from "../config/index";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser, updateUserFetching, updateBalance } from "../features/user/userSlice";
+import {
+  updateUser,
+  updateUserFetching,
+  updateBalance,
+} from "../features/user/userSlice";
 import { toast } from "react-toastify";
 import { colors } from "../components/colors";
 
@@ -75,28 +79,28 @@ const Dashboard = () => {
       toast.error(err.message);
     }
   };
-  
 
   const fetchBalance = async () => {
-  try{
-    const response = await axios.get(`${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.balance}`,{
-      headers: {
-         Authorization: `Bearer ${token}` 
+    try {
+      const response = await axios.get(
+        `${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.balance}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        dispatch(updateBalance(response?.data?.balance));
       }
-    })
-    
-    if(response.status ===200) {
-      dispatch(
-        updateBalance(response?.data?.balance)
-      )
+    } catch (err) {
+      console.log(err.message);
     }
-  }catch(err){
-    console.log(err.message)
-  }
-  }
-  useEffect(()=>{
-    fetchBalance()
-  },[])
+  };
+  useEffect(() => {
+    fetchBalance();
+  }, []);
   useEffect(() => {
     fetchUser();
   }, [token]);
@@ -143,7 +147,9 @@ const Dashboard = () => {
           <WhiteSection>
             <div>
               <p style={{ fontWeight: "bold" }}>My balance</p>
-              <p style={{ fontWeight: "bold" }}>{balance !== "" ? balance : "****"} USDT</p>
+              <p style={{ fontWeight: "bold" }}>
+                {balance !== "" ? balance : "****"} USDT
+              </p>
             </div>
             <hr />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -187,7 +193,6 @@ const Dashboard = () => {
           </WhiteSection>
         </Container>
       </StyledProfileBackground>
-    
 
       <div style={styles.menuListContainer}>
         {menuRoutes.map(({ id, name, icon, color, route }) => (
