@@ -3,8 +3,8 @@ import { Container, SecondaryBtn } from "../styles/styledUtils";
 import { Icon } from "@iconify/react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import { baseUrl, paths } from "../config/index";
+import { useDispatch } from "react-redux";
 import * as yup from "yup";
 import { Formik } from "formik";
 import Input from "../components/Input";
@@ -162,8 +162,7 @@ const SignUp = () => {
               <Input
                 formikProps={formikProps}
                 formikKey="referral_code"
-                placeholder="123456"
-                type="number"
+                placeholder="Enter your referral code"
                 value={formikProps.values.referral_code}
                 maxLength={7}
               />

@@ -73,6 +73,7 @@ const Dashboard = () => {
       if (response.status === 200) {
         dispatch(updateUser(response.data));
         dispatch(updateUserFetching(false));
+        await fetchBalance();
       }
     } catch (err) {
       dispatch(updateUserFetching(false));

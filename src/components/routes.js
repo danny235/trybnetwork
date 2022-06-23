@@ -10,6 +10,8 @@ import HomeScreen from "../main/HomeScreen";
 import Withdrawal from "../main/Withdrawal";
 import Profile from "../main/Profile";
 import Invitation from "../main/Invitation";
+import ForgotPassword from "../auth/ForgotPassword";
+import { CreateNewPassword } from "../auth/CreateNewPassword";
 
 const unAuthRoutes = [
   {
@@ -39,6 +41,20 @@ const unAuthRoutes = [
     name: "signup",
     id: "auth",
     component: <SignUp />,
+  },
+  {
+    pathname: "/forgot-password",
+    exact: true,
+    name: "forgotPassword",
+    id: "auth",
+    component: <ForgotPassword />,
+  },
+  {
+    pathname: "/newpassword:token",
+    exact: true,
+    name: "CreateNewPassword",
+    id: "auth",
+    component: <CreateNewPassword />,
   },
 ];
 

@@ -112,7 +112,7 @@ const Login = () => {
                 }}
                 onClick={() => setShowPassword(!showPassword)}
               />
-              <Link style={styles.linkStyle} to="#">
+              <Link style={styles.linkStyle} to="/forgot-password">
                 Forgot password?
               </Link>
             </div>

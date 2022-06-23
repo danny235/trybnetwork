@@ -57,7 +57,11 @@ const HomeScreen = () => {
     try {
       const { data, status } = await axios.post(
         `${baseUrl}/${paths.createBet}/${slug}/`,
-        betValues
+        betValues, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       if (status === 200) {
         setBetting(false)
@@ -81,7 +85,11 @@ const HomeScreen = () => {
   const fetchCurrentSession = async () => {
     try{
 
-      const { data, status } = await axios.get(`${baseUrl}/${paths.session}/`);
+      const { data, status } = await axios.get(`${baseUrl}/${paths.session}/`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log(data, status);
       let time
       if (status === 200) {
