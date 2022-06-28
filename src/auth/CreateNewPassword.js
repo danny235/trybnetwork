@@ -31,7 +31,7 @@ export const CreateNewPassword = (values) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   console.log(token);
-  const handleSubmit = async () => {
+  const handleSubmit = async (values) => {
     setIsFetching(true)
     try {
         const { data, status } = await axios.post(

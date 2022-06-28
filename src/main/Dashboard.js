@@ -66,14 +66,15 @@ const Dashboard = () => {
   const fetchUser = async () => {
     try {
       dispatch(updateUserFetching(true));
-      const response = await axios.get(`${baseUrl}/${paths.currentUser}`, {
+      const {data, status} = await axios.get(`${baseUrl}/${paths.currentUser}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (response.status === 200) {
-        dispatch(updateUser(response.data));
+      if (status === 200) {
+       
+        dispatch(updateUser(data));
         dispatch(updateUserFetching(false));
-        await fetchBalance();
+        await fetchBalance(data?.profile?.slug);
       }
     } catch (err) {
       dispatch(updateUserFetching(false));
@@ -81,10 +82,10 @@ const Dashboard = () => {
     }
   };
 
-  const fetchBalance = async () => {
+  const fetchBalance = async (slug) => {
     try {
       const response = await axios.get(
-        `${baseUrl}/${paths.wallet}/${userProfile?.profile?.slug}/${paths.balance}`,
+        `${baseUrl}/${paths.wallet}/${slug}/${paths.balance}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -99,9 +100,9 @@ const Dashboard = () => {
       console.log(err.message);
     }
   };
-  useEffect(() => {
-    fetchBalance();
-  }, []);
+  // useEffect(() => {
+  //   fetchBalance();
+  // }, []);
   useEffect(() => {
     fetchUser();
   }, [token]);

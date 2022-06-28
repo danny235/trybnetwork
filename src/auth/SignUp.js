@@ -51,6 +51,11 @@ const SignUp = () => {
       }
       
     } catch (err) {
+      if (err.message === "Request failed with status code 400") {
+        toast.error(err?.response?.data?.detail[0]);
+        setIsFetching(false);
+        return
+      }
       console.log(err.message);
       toast.error(err.message);
       setIsFetching(false);
