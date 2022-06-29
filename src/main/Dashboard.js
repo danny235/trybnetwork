@@ -1,12 +1,11 @@
 import { Icon } from "@iconify/react";
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { dp, profileBackground } from "../assets";
+import { dp } from "../assets";
 import Brand from "../components/Brand";
 import MenuList from "../components/MenuList";
 import {
   Container,
-  SecondaryBtn,
   StyledProfileBackground,
   WhiteSection,
 } from "../styles/styledUtils";
@@ -17,6 +16,7 @@ import {
   updateUser,
   updateUserFetching,
   updateBalance,
+  logOutUser
 } from "../features/user/userSlice";
 import { toast } from "react-toastify";
 import { colors } from "../components/colors";
@@ -78,6 +78,21 @@ const Dashboard = () => {
       }
     } catch (err) {
       dispatch(updateUserFetching(false));
+      if (err.message === "Request failed with status code 401") {
+        dispatch(logOutUser())
+        toast.error("Unauthorized please login");
+        return
+      }
+      if (err.message === "Request failed with status code 500") {
+        dispatch(logOutUser())
+        toast.error("Unauthorized please login");
+        return
+      }
+      if (err.message === "Request failed with status code 404") {
+        dispatch(logOutUser())
+        toast.error("Unauthorized please login");
+        return
+      }
       toast.error(err.message);
     }
   };

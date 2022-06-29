@@ -45,6 +45,11 @@ const Login = () => {
         setIsFetching(false);
         return
       } 
+      if (err.message === "Request failed with status code 500") {
+        toast.error(err?.response?.data?.detail);
+        setIsFetching(false);
+        return
+      } 
       console.log(err.message);
       toast.error(err.message);
       setIsFetching(false);
