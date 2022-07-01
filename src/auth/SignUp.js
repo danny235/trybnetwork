@@ -53,6 +53,19 @@ const SignUp = () => {
     } catch (err) {
       if (err.message === "Request failed with status code 400") {
         toast.error(err?.response?.data?.detail[0]);
+        toast.error(err?.response?.data?.detail);
+        setIsFetching(false);
+        return
+      }
+      if (err.message === "Request failed with status code 500") {
+        toast.error(err?.response?.data?.detail[0]);
+        toast.error(err?.response?.data?.detail);
+        setIsFetching(false);
+        return
+      }
+      if (err.message === "Request failed with status code 401") {
+        toast.error(err?.response?.data?.detail[0]);
+        toast.error(err?.response?.data?.detail);
         setIsFetching(false);
         return
       }
@@ -169,7 +182,7 @@ const SignUp = () => {
                 formikKey="referral_code"
                 placeholder="Enter your referral code"
                 value={formikProps.values.referral_code}
-                maxLength={7}
+                maxLength="7"
               />
               <p
                 style={{
